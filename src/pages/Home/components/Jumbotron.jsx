@@ -4,6 +4,13 @@ import { useState } from "react";
 // ...existing code...
 import { useGetProvinces } from "@/hooks/useGetProvinces.jsx";
 import { useGetRegencies } from "@/hooks/useGetRegencies.jsx";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Jumbotron() {
   const [province, setProvince] = useState("");
@@ -23,16 +30,6 @@ export default function Jumbotron() {
     refetch: refetchRegencies,
   } = useGetRegencies(province);
 
-  function handleProvinceChange(e) {
-    const pid = e.target.value;
-    setProvince(pid);
-    setRegency("");
-  }
-
-  function handleRegencyChange(e) {
-    setRegency(e.target.value);
-  }
-
   const canReport = province && regency;
 
   return (
@@ -47,7 +44,7 @@ export default function Jumbotron() {
       {/* Content */}
       <div className="container relative z-20 mx-auto">
         <div className="flex min-h-[80vh] items-center gap-12 py-12 text-center">
-          <div className="flex flex-col justify-center">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-center">
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
               Laporkan Kerusakan Infrastruktur di Daerah Anda
             </h1>
@@ -61,32 +58,43 @@ export default function Jumbotron() {
             {/* Form */}
             <div className="mb-6 rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                {/* Province */}
+                <div className="text-left">
                   <label className="mb-2 block text-sm text-gray-200">
                     Provinsi
                   </label>
-                  <select
+                  <Select
                     value={province}
-                    onChange={handleProvinceChange}
+                    onValueChange={(v) => {
+                      setProvince(v);
+                      setRegency("");
+                    }}
                     disabled={provincesLoading}
-                    className="h-[50px] w-full rounded-md border border-white/20 bg-white/10 px-4 text-white outline-none transition focus:border-white/40 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <option value="" className="text-black">
-                      {provincesLoading ? "Memuat..." : "Pilih Provinsi"}
-                    </option>
-                    {provinces
-                      .slice()
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((p) => (
-                        <option
+                    <SelectTrigger className="h-[50px] w-full rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/80 focus:border-white/40 focus:ring-2 focus:ring-white/40">
+                      <SelectValue
+                        placeholder={
+                          provincesLoading ? "Memuat..." : "Pilih Provinsi"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64 overflow-auto border-white/15 bg-neutral-900/95 text-white backdrop-blur-md">
+                      {provinces.map((p) => (
+                        <SelectItem
                           key={p.province_id}
-                          value={p.province_id}
-                          className="text-black"
+                          value={String(p.province_id)}
+                          className="cursor-pointer focus:bg-white/10 data-[highlighted]:bg-white/10"
                         >
                           {p.name}
-                        </option>
+                        </SelectItem>
                       ))}
-                  </select>
+                      {!provincesLoading && provinces.length === 0 && (
+                        <SelectItem disabled value="empty">
+                          Tidak ada data
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                   {provincesError && (
                     <div className="mt-2 text-sm text-red-300">
                       Gagal memuat provinsi.{" "}
@@ -99,37 +107,46 @@ export default function Jumbotron() {
                     </div>
                   )}
                 </div>
-                    
-                <div>
+                {/* Regency */}
+                <div className="text-left">
                   <label className="mb-2 block text-sm text-gray-200">
                     Kabupaten/Kota
                   </label>
-                  <select
+                  <Select
                     value={regency}
-                    onChange={handleRegencyChange}
+                    onValueChange={(v) => setRegency(v)}
                     disabled={!province || regenciesLoading}
-                    className="h-[50px] w-full rounded-md border border-white/20 bg-white/10 px-4 text-white outline-none transition focus:border-white/40 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="" className="text-black">
-                      {!province
-                        ? "Pilih Provinsi dulu"
-                        : regenciesLoading
-                          ? "Memuat..."
-                          : "Pilih Kabupaten/Kota"}
-                    </option>
-                    {regencies
-                      .slice()
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((r) => (
-                        <option
+                    <SelectTrigger className="h-[50px] w-full rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/80 focus:border-white/40 focus:ring-2 focus:ring-white/40">
+                      <SelectValue
+                        placeholder={
+                          !province
+                            ? "Pilih Provinsi dulu"
+                            : regenciesLoading
+                              ? "Memuat..."
+                              : "Pilih Kabupaten/Kota"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64 overflow-auto border-white/15 bg-neutral-900/95 text-white backdrop-blur-md">
+                      {regencies.map((r) => (
+                        <SelectItem
                           key={r.regency_id}
-                          value={r.regency_id}
-                          className="text-black"
+                          value={String(r.regency_id)}
+                          className="cursor-pointer focus:bg-white/10 data-[highlighted]:bg-white/10"
                         >
                           {r.name}
-                        </option>
+                        </SelectItem>
                       ))}
-                  </select>
+                      {!regenciesLoading &&
+                        province &&
+                        regencies.length === 0 && (
+                          <SelectItem disabled value="empty">
+                            Tidak ada data
+                          </SelectItem>
+                        )}
+                    </SelectContent>
+                  </Select>
                   {regenciesError && (
                     <div className="mt-2 text-sm text-red-300">
                       Gagal memuat kabupaten/kota.{" "}
@@ -147,7 +164,7 @@ export default function Jumbotron() {
                 variant="secondary"
                 size="lg"
                 disabled={!canReport}
-                className="mt-6 flex h-[50px] w-full transition-transform  disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 flex h-[50px] w-full transition-transform disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={() =>
                   console.log("Mulai Lapor:", {
                     provinceId: province,
