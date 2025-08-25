@@ -1,15 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { useAuth} from "../context/Auth";
+import { useAuth } from "../context/Auth";
 
-import Spinner from "../components/loader.jsx";
+import Spinner from "../components/Loader.jsx";
 
-export default function AdminAccess(){
-    const {isAuth, isChecking, user} = useAuth();
-    console.log(user);
-    
-    if(isChecking) return <Spinner />
+export default function AdminAccess() {
+  const { isAuth, isChecking, user } = useAuth();
+  console.log(user);
 
-    return (!isAuth || user.role !== "ADMIN") ?  <Navigate to="/dashboard" /> : <Outlet />;
+  if (isChecking) return <Spinner />;
 
+  return !isAuth || user.role !== "ADMIN" ? (
+    <Navigate to="/dashboard" />
+  ) : (
+    <Outlet />
+  );
 }

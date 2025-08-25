@@ -1,59 +1,62 @@
-import { useEffect} from 'react'
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import PrivateRoute from './utils/PrivateRoute.jsx'
-import { useAuth } from './context/Auth.jsx'
-import Register from './pages/auth/register.jsx'
-import Login from './pages/auth/login.jsx'
 import { Suspense, lazy } from "react";
-import Spinner from './components/loader.jsx'
-import UploadForm from './pages/laporan.jsx'
-import AdminAccess from './utils/AdminRouteAccess.jsx'
-import AdminDashboard from './pages/admin/testAdminDashboard.jsx'
-import { NotFound } from './pages/notFound.jsx'
-import Profile from './pages/profile.jsx'
-import Article from './pages/article.jsx'
-import LogProcess from './pages/logProcess.jsx'
-import LeaderBoard from './pages/leaderBoard.jsx'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import PrivateRoute from "./utils/PrivateRoute.jsx";
+import { useAuth } from "./context/Auth.jsx";
+import Register from "./pages/auth/register.jsx";
+import Login from "./pages/auth/login.jsx";
+import Spinner from "./components/Loader.jsx";
+import NotFound from "./pages/notFound.jsx";
+import HomePage from "@/pages/Home/index.jsx";
+import PublicLayout from "./layouts/PublicLayout.jsx";
 
-const Dashboard = lazy(()=>import('./pages/testDashboard.jsx'))
+const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
 function App() {
-  const {isAuth} = useAuth();
-  const navigate = useNavigate(); 
-  const location = useLocation();
+  const { isAuth } = useAuth();
 
-useEffect(() => {
-  if (isAuth && (location.pathname === '/' || location.pathname === '/login')) {
-    navigate('/dashboard');
-  }
-}, [isAuth, navigate, location.pathname]);
-    
-    return (
-        <Suspense fallback={<Spinner/>}>
-        <Routes>
-          <Route path='/' element={<Register/>}/>
-          <Route path="/login" element={<Login/>}/>
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <PublicLayout />,
+      children: [
+        {
+          index: true,
+          element: <HomePage />,
+        },
+      ],
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      element: <PrivateRoute />,
+      children: [
+        {
+          path: "/dashboard",
+          element: (
+            <Suspense fallback={<Spinner />}>
+              <Dashboard />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
+  ]);
 
-          {/* protect routes */}
-          <Route path="/dashboard"  element={<Dashboard/>} />
-          <Route path="/profile"  element={<Profile/>} />
-          <Route path="/article"  element={<Article/>} />
-          <Route path="/log"  element={<LogProcess/>} />
-          <Route path="/leader-board"  element={<LeaderBoard/>} />
-            <Route path="/laporan" element={<UploadForm/>} />
+  return (
+    <Suspense fallback={<Spinner />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
+}
 
-          <Route element= {<PrivateRoute/>}>
-
-            {/* admin routes */}
-            <Route element= {<AdminAccess/>}>
-              <Route path="/admin" element={<AdminDashboard/>} />
-            </Route>
-          </Route>
-          {/* 404 Page */}
-          <Route path="*" element={<NotFound/>} />
-        </Routes>
-        </Suspense>
-    )
-  }
-
-  export default App
+export default App;

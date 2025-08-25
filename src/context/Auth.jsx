@@ -5,119 +5,101 @@ import { Login, Logout, Refresh, Register } from "../resolver/auth/authApp.js";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [isAuth, setIsAuth] = useState(false);
-    const [isChecking, setIsChecking] = useState(true);
-    const [user, setUser] = useState("");
-    const token =  JSON.parse(localStorage.getItem("user"));
-    
-    useEffect(() => {
-        
-        const checkAuth = async()=>{
-            try {
-                let user =  JSON.parse( localStorage.getItem('user')); 
-                if (user) {
-                    const data = jwtDecode(user.token);
+  const [isAuth, setIsAuth] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+  const [user, setUser] = useState("");
+  const token = localStorage.getItem("token");
 
-                    const now = Date.now() /1000;
-                    const bufferTime = 60;
-                    console.log('now: ', now);
-                    console.log('exp: ', data.exp);
-                    
-                    if(data.exp <= now){
-                        console.log('token expired, refresh token');
-                        const token = await Refresh();
-                        localStorage.setItem('user', JSON.stringify({
-                            user: user.user,
-                            token: token
-                        }))
-                        
-                        // localStorage.removeItem("user");
-                    }
-                    
-                    setIsAuth(true);
-                    setUser(user.user);
-                    // window.location.href = "/dashboard";
-                }
-            } catch (error) {
-                alert(error.message);
-                // auto redirecr when gagal
-                localStorage.removeItem("user");
-                setIsAuth(false);
-                setUser(null);
-            }
-            
-            setIsChecking(false);
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        let token = localStorage.getItem("token");
+        if (token) {
+          const data = jwtDecode(token);
+          const now = Date.now() / 1000;
+          if (data.exp >= now) {
+            localStorage.removeItem("token");
+            token = await Refresh();
+            localStorage.setItem("token", token);
+          }
+          setIsAuth(true);
+          setUser(token);
         }
-        checkAuth();
-    }, []);
+      } catch (error) {
+        alert(error.message);
+        // auto redirecr when gagal
+        window.location.href = "/login";
+      }
 
-    const login = async (identifier, password) => {
-        try {
-            // hit api (/user/login)
-            let userLogin = await Login(identifier, password);
-            userLogin.user = jwtDecode(userLogin.token);
-            console.log(userLogin);
-            
-            localStorage.setItem('user', JSON.stringify(userLogin))
-
-
-            setIsAuth(true);
-            setUser(userLogin.user);
-            return {
-                success: true,
-                data: userLogin.user
-            }
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message
-            }
-        }
+      setIsChecking(false);
     };
+    checkAuth();
+  }, []);
 
+  const login = async (username, password) => {
+    try {
+      // hit api (/user/login)
+      const userLogin = await Login(username, password);
+      localStorage.setItem("token", userLogin.accessToken);
 
-    const register = async(data) =>{
-        try {
-            const userRegis = await Register(data)
-            return {
-                success: true,
-                data: userRegis
-            };
-
-        } catch (error) {
-            // console.log("test err: ", error.message);
-            return {
-                success: false,
-                error: error.message
-            }
-        }
+      setIsAuth(true);
+      setUser(userLogin.data.name);
+      return {
+        success: true,
+        data: userLogin,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        error: err.message,
+      };
     }
+  };
 
-    const logout = async () => {
-        try {
-            const user = await Logout(token.token);
+  const register = async ({ username, name, password }) => {
+    try {
+      const data = { username, name, password };
+      const userRegis = await Register(data);
+      return {
+        success: true,
+        data: userRegis,
+      };
+    } catch (error) {
+      // console.log("test err: ", error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  };
 
-            if(user== 'Logout successful.'){
-                localStorage.removeItem("user");
-                setIsAuth(false);
-                setUser(null);
-            }
-        } catch (error) {
-            return {
-                success: false,
-                error: error.message
-            }
-        }
-    };
+  const logout = async () => {
+    try {
+      const user = await Logout(token);
 
-    return (
-        <AuthContext.Provider value={{ isAuth, isChecking, user, login, logout, register}}>
-            {children}
-        </AuthContext.Provider>
-    );
+      if (user == "ok") {
+        localStorage.removeItem("token");
+        setIsAuth(false);
+        setUser(null);
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ isAuth, isChecking, user, login, logout, register }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-// use this for get 
+// use this for get
 export const useAuth = () => {
-    return useContext(AuthContext);
-}; 
+  return useContext(AuthContext);
+};
