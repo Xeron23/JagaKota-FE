@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
-import { useAuth } from "./context/Auth.jsx";
+// import { useAuth } from "./context/Auth.jsx";
 import Register from "./pages/auth/register.jsx";
 import Login from "./pages/auth/login.jsx";
 import Spinner from "./components/Loader.jsx";
@@ -12,7 +12,7 @@ import PublicLayout from "./layouts/PublicLayout.jsx";
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
 function App() {
-  const { isAuth } = useAuth();
+  // const { isAuth } = useAuth();
 
   const router = createBrowserRouter([
     {

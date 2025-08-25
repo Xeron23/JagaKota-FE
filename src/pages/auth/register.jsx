@@ -51,9 +51,9 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">
           Register
         </h2>
         <form onSubmit={handleRegister}>
@@ -95,7 +95,7 @@ function Register() {
           </ButtonSubmit>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-600">
+        <p className="mt-4 text-center text-sm text-gray-600">
           Sudah punya akun?{" "}
           <a href="/login" className="text-blue-500 hover:underline">
             Login
