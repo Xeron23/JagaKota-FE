@@ -13,10 +13,11 @@ export default {
     // spacing: {
     //   '128': '32rem',
     // },
-    // fontFamily: {
-    //   sans: ['Inter', 'sans-serif'],
-    // },
+
     extend: {
+      fontFamily: {
+        jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
       animation: {
           'spin-slow': 'spin 2s linear infinite',
       }
