@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+const api = import.meta.env.VITE_API_BASE_URL ?? "";
+
 export const getAllProvince = async () => {
   try {
-    // const province = await axios.get('http://localhost:9000/provinces');
-    const province = await axios.get(
-      "https://jagakota-backend.azurewebsites.net/provinces",
-    );
+    const province = await axios.get(`${api}/provinces`);
 
     return province.data.data;
   } catch (error) {
@@ -18,6 +17,7 @@ export const getAllProvince = async () => {
 export const useGetProvinces = () => {
   return useQuery({
     queryKey: ["provinces"],
-    queryFn : getAllProvince,
-  })
-}
+    queryFn: getAllProvince,
+    
+  });
+};
