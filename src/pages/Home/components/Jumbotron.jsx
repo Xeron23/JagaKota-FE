@@ -25,7 +25,7 @@ export default function Jumbotron() {
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
               Laporkan Kerusakan Infrastruktur di Daerah Anda
             </h1>
-            <p className="mb-8 text-lg leading-relaxed text-gray-100">
+            <p className="mb-8 text-lg leading-relaxed text-gray-200">
               Bantu pemerintah memperbaiki jalan rusak, lampu jalan mati,
               drainase tersumbat, dan kerusakan lainnya. Laporkan lokasi dan
               detail agar tim kami bisa menindaklanjuti lebih cepat dengan{" "}
@@ -34,6 +34,7 @@ export default function Jumbotron() {
 
             {/* Card wrapper */}
             <div className="mb-6 rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
+              <p>cari laporan</p>
               <ProvinceRegencySelect
                 provinceId={province}
                 regencyId={regency}

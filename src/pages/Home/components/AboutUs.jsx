@@ -30,11 +30,11 @@ export default function AboutUs() {
               JagaKota menghubungkan laporan warga dengan instansi terkait untuk
               mempercepat perbaikan infrastruktur di sekitar Anda.
             </p>
-            <div className="mt-4 grid max-w-6xl grid-cols-4 divide-x divide-black/10 overflow-hidden rounded-xl border border-white/15 shadow-xl shadow-blue-500/10 bg-[#F7EEDF] backdrop-blur-sm">
+            <div className="mt-4 grid max-w-6xl grid-cols-4 divide-x divide-black/10 overflow-hidden rounded-xl border border-white/15 bg-[#F7EEDF]/75 shadow-xl shadow-blue-500/10 backdrop-blur-sm">
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-center space-y-3 px-12 py-7 text-center transition-all duration-300 ease-out hover:bg-[#b5893f] hover:text-white focus:outline-none focus-visible:-translate-y-2 focus-visible:bg-black focus-visible:text-white"
+                  className="flex flex-col items-center justify-center space-y-3 px-12 py-7 text-center transition-all duration-300 ease-out hover:bg-[#c2851f] hover:text-white focus:outline-none focus-visible:-translate-y-2 focus-visible:bg-black focus-visible:text-white"
                 >
                   <h1 className="text-6xl font-[600]">{stat.value}</h1>
                   <h2 className="text-md font-[400]">{stat.label}</h2>
