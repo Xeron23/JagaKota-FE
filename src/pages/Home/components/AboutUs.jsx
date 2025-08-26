@@ -11,7 +11,7 @@ export default function AboutUs() {
       id="about-us"
       className="relative isolate flex h-[80vh] w-full items-center justify-center bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-20 text-black"
     >
-      {/* Background effects */}
+      {/* Background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-indigo-400/20 blur-3xl" />
         <div className="absolute -bottom-40 right-0 h-[360px] w-[360px] rounded-full bg-amber-300/25 blur-3xl" />

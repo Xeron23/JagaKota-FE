@@ -34,7 +34,9 @@ export default function Jumbotron() {
 
             {/* Card wrapper */}
             <div className="mb-6 rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
-              <p>cari laporan</p>
+              <p className="mb-4 text-xl font-[600]">
+                Temukan Laporan di Daerah Anda
+              </p>
               <ProvinceRegencySelect
                 provinceId={province}
                 regencyId={regency}
