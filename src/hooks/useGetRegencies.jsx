@@ -19,5 +19,7 @@ export const useGetRegencies = (provinceId) => {
     queryKey: ["regencies", provinceId],
     queryFn: () => getRegenciesByProvinceId(provinceId),
     enabled: !!provinceId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 1200 * 60 * 1000, // 1200 minutes
   });
 };
