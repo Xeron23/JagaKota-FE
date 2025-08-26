@@ -1,10 +1,11 @@
 import React from "react";
+import JagaKotaLogo from "../assets/JagaKotaa.svg";
 
 const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-white/10 bg-gray-950 text-gray-300">
+    <footer className="relative bg-gray-950 text-gray-300">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.05),transparent)]"
@@ -143,7 +144,17 @@ const Footer = () => {
 
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-gray-400 md:flex-row">
-          <p>© {year} JagaKota. All rights reserved.</p>
+          <div className="flex items-center space-x-3">
+            <img
+              src={JagaKotaLogo}
+              alt="JagaKota Logo"
+              className="ml-[40px] mt-[6px] h-[54px] w-[100px] "
+            />
+            <p className="justify-center">
+              © {year} JagaKota. All rights reserved.
+            </p>
+          </div>
+
           <div className="flex items-center gap-4">
             <a className="hover:text-white" href="/kebijakan-privasi">
               Kebijakan Privasi
