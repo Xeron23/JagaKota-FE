@@ -1,4 +1,4 @@
-// ...existing code...
+// Simple, safe report card for your API shape
 const STATUS_STYLES = {
   PENDING: "bg-amber-100 text-amber-800 ring-amber-200",
   APPROVED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
@@ -19,8 +19,18 @@ function formatDate(iso) {
   }
 }
 
+function formatAddress(address) {
+  if (!address) return "Lokasi tidak tersedia";
+  if (typeof address === "string") return address;
+  const street = address.street;
+  const regency = address.regency?.name;
+  const province = address.province?.name;
+  const parts = [street, regency, province].filter(Boolean);
+  return parts.length ? parts.join(", ") : "Lokasi tidak tersedia";
+}
+
 export default function ReportCard({
-  report,
+  report = {},
   href,
   onClick,
   className = "",
@@ -28,89 +38,67 @@ export default function ReportCard({
 }) {
   if (loading) {
     return (
-      <div
-        className={`overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm ${className}`}
-      >
-        <div className="grid animate-pulse md:grid-cols-[320px,1fr]">
-          <div className="h-52 w-full bg-gray-200 md:h-[220px]" />
-          <div className="space-y-3 p-5">
-            <div className="h-4 w-24 rounded bg-gray-200" />
-            <div className="h-6 w-3/4 rounded bg-gray-200" />
-            <div className="h-4 w-full rounded bg-gray-200" />
-            <div className="h-4 w-5/6 rounded bg-gray-200" />
-            <div className="mt-3 h-9 w-28 rounded bg-gray-200" />
+      <article className={`rounded-2xl border border-black/5 bg-white shadow-sm ${className}`}>
+        <div className="flex flex-col">
+          <div className="h-48 w-full animate-pulse bg-gray-200" />
+          <div className="flex h-full flex-col gap-3 p-5">
+            <div className="h-5 w-28 animate-pulse rounded bg-gray-200" />
+            <div className="h-6 w-2/3 animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-5/6 animate-pulse rounded bg-gray-200" />
+            <div className="mt-2 h-8 w-28 animate-pulse self-end rounded bg-gray-200" />
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (!report) {
-    return (
-      <article
-        className={`flex items-center justify-center rounded-2xl border border-dashed border-gray-300/60 bg-white p-8 text-sm text-gray-500 ${className}`}
-      >
-        Tidak ada data laporan
       </article>
     );
   }
 
-  const badge =
-    STATUS_STYLES[report.verification_status] ||
-    "bg-gray-100 text-gray-700 ring-gray-200";
-  const dateLabel = formatDate(report.createdAt);
-  const detailsHref = href ?? `/reports/${report.report_id}`;
-  const address = report.address ?? "Lokasi tidak tersedia";
+  const status = String(report?.verification_status || "").toUpperCase();
+  const badge = STATUS_STYLES[status] || "bg-gray-100 text-gray-700 ring-gray-200";
+  const dateLabel = formatDate(report?.createdAt);
+  const detailsHref = href ?? (report?.report_id ? `/reports/${report.report_id}` : "#");
+  const addressLabel = formatAddress(report?.address);
+  const usernameLabel = report?.author?.username ? `@${report.author.username}` : "Pengguna anonim";
 
   return (
-    <article
-      className={`group overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm ring-1 ring-black/0 transition focus-within:shadow-lg hover:shadow-lg hover:ring-black/5 ${className}`}
-    >
-      <div className="grid md:grid-cols-[320px,1fr]">
+    <article className={`group overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:shadow-lg ${className}`}>
+      <div className="flex flex-col">
         <div className="relative">
-          <img
-            src={report.photoUrl}
-            alt={report.title}
-            className="h-52 w-full object-cover md:h-full"
-            loading="lazy"
-          />
-          <div className="absolute inset-x-0 bottom-0 hidden items-center gap-2 bg-gradient-to-t from-black/40 to-transparent p-3 md:hidden">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-medium ring-1 ring-inset ${badge}`}
-            >
-              {report.verification_status}
-            </span>
-            <span className="text-[10px] text-white/90">{dateLabel}</span>
-          </div>
+          {report?.photoUrl ? (
+            <img
+              src={report.photoUrl}
+              alt={report.title || "Foto laporan"}
+              className="h-48 w-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="h-48 w-full bg-gray-100" />
+          )}
         </div>
 
         <div className="flex h-full flex-col p-5">
           <div className="mb-3 flex items-center gap-2">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${badge}`}
-            >
-              {report.verification_status}
+            <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${badge}`}>
+              {status || "UNKNOWN"}
             </span>
             <span className="text-xs text-gray-500">{dateLabel}</span>
             <span className="ml-auto inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
-              Progress: {report._count?.progressUpdates ?? 0}
+              Progress: {report?._count?.progressUpdates ?? 0}
             </span>
           </div>
 
           <h3 className="line-clamp-1 text-lg font-semibold text-gray-900">
-            {report.title}
+            {report?.title || "Tanpa judul"}
           </h3>
           <p className="mt-2 line-clamp-3 text-sm text-gray-700">
-            {report.description}
+            {report?.description || "-"}
           </p>
 
           <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate font-medium text-gray-800">
-                @{report.author?.username}
-              </span>
+              <span className="truncate font-medium text-gray-800">{usernameLabel}</span>
               <span aria-hidden>•</span>
-              <span className="truncate">{address}</span>
+              <span className="truncate">{addressLabel}</span>
             </div>
 
             {onClick ? (
