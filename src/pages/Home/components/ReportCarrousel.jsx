@@ -1,7 +1,6 @@
 import backgroundImage from "@/assets/images/reportcarrousel-background.svg";
 import ReportCard from "@/components/ReportCard";
 import { useGetReports } from "@/hooks/useGetReports";
-import { Button } from "@/components/ui/button";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -97,7 +96,7 @@ export default function ReportCarrousel() {
         ) : (
           <div className="relative w-full px-14">
             <Swiper {...swiperConfig}>
-              {(isLoading ? Array.from({ length: 6 }) : reports).map((r, i) => (
+              {(isLoading ? Array.from({ length: 4 }) : reports).map((r, i) => (
                 <SwiperSlide key={isLoading ? `s-${i}` : r.report_id}>
                   <ReportCard
                     report={isLoading ? {} : r}
