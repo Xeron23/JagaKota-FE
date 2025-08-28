@@ -1,4 +1,6 @@
-// ...existing code...
+import { Button } from "./ui/button";
+import { MapPin, Calendar, User } from "lucide-react";
+
 const STATUS_STYLES = {
   PENDING: "bg-amber-100 text-amber-800 ring-amber-200",
   APPROVED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
@@ -19,8 +21,36 @@ function formatDate(iso) {
   }
 }
 
+function toTitleCase(input = "") {
+  const KEEP_UPPER = new Set(["RT", "RW", "DKI", "DIY"]);
+  return String(input)
+    .split(/(\s|-|\/)/g)
+    .map((part) => {
+      const upper = part.toUpperCase();
+      if (KEEP_UPPER.has(upper)) return upper;
+      return /^[A-Za-zÀ-ÖØ-öø-ÿ]/.test(part)
+        ? part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+        : part;
+    })
+    .join("");
+}
+
+function formatAddress(address) {
+  if (!address) return "Lokasi tidak tersedia";
+  if (typeof address === "string") return toTitleCase(address);
+  const street = address.street ? toTitleCase(address.street) : undefined;
+  const regency = address.regency?.name
+    ? toTitleCase(address.regency.name)
+    : undefined;
+  const province = address.province?.name
+    ? toTitleCase(address.province.name)
+    : undefined;
+  const parts = [regency, province, street].filter(Boolean);
+  return parts.length ? parts.join(", ") : "Lokasi tidak tersedia";
+}
+
 export default function ReportCard({
-  report,
+  report = {},
   href,
   onClick,
   className = "",
@@ -28,107 +58,88 @@ export default function ReportCard({
 }) {
   if (loading) {
     return (
-      <div
-        className={`overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm ${className}`}
+      <article
+        className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ${className}`}
       >
-        <div className="grid animate-pulse md:grid-cols-[320px,1fr]">
-          <div className="h-52 w-full bg-gray-200 md:h-[220px]" />
-          <div className="space-y-3 p-5">
-            <div className="h-4 w-24 rounded bg-gray-200" />
-            <div className="h-6 w-3/4 rounded bg-gray-200" />
-            <div className="h-4 w-full rounded bg-gray-200" />
-            <div className="h-4 w-5/6 rounded bg-gray-200" />
-            <div className="mt-3 h-9 w-28 rounded bg-gray-200" />
+        <div className="h-48 w-full animate-pulse bg-gray-200" />
+        <div className="flex flex-1 flex-col p-4">
+          <div className="h-6 w-3/4 animate-pulse rounded bg-gray-200" />
+          <div className="mt-2 h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+          <div className="mt-auto flex flex-col gap-2 pt-4">
+            <div className="h-4 w-full animate-pulse self-end rounded bg-gray-200" />
+            <div className="h-10 w-full animate-pulse rounded-lg bg-gray-200" />
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (!report) {
-    return (
-      <article
-        className={`flex items-center justify-center rounded-2xl border border-dashed border-gray-300/60 bg-white p-8 text-sm text-gray-500 ${className}`}
-      >
-        Tidak ada data laporan
       </article>
     );
   }
 
+  const status = String(report?.verification_status || "").toUpperCase();
   const badge =
-    STATUS_STYLES[report.verification_status] ||
-    "bg-gray-100 text-gray-700 ring-gray-200";
-  const dateLabel = formatDate(report.createdAt);
-  const detailsHref = href ?? `/reports/${report.report_id}`;
-  const address = report.address ?? "Lokasi tidak tersedia";
+    STATUS_STYLES[status] || "bg-gray-100 text-gray-700 ring-gray-200";
+  const dateLabel = formatDate(report?.createdAt);
+  const detailsHref =
+    href ?? (report?.report_id ? `/reports/${report.report_id}` : "#");
+  const addressLabel = formatAddress(report?.address);
+  const usernameLabel = report?.author?.username
+    ? `@${report.author.username}`
+    : "Pengguna anonim";
 
   return (
     <article
-      className={`group overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm ring-1 ring-black/0 transition focus-within:shadow-lg hover:shadow-lg hover:ring-black/5 ${className}`}
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-300 ${className}`}
     >
-      <div className="grid md:grid-cols-[320px,1fr]">
-        <div className="relative">
+      <div className="relative">
+        {report?.photoUrl ? (
           <img
             src={report.photoUrl}
-            alt={report.title}
-            className="h-52 w-full object-cover md:h-full"
+            alt={report.title || "Foto laporan"}
+            className="h-48 w-full object-cover p-2 rounded-t-2xl"
             loading="lazy"
           />
-          <div className="absolute inset-x-0 bottom-0 hidden items-center gap-2 bg-gradient-to-t from-black/40 to-transparent p-3 md:hidden">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-medium ring-1 ring-inset ${badge}`}
-            >
-              {report.verification_status}
-            </span>
-            <span className="text-[10px] text-white/90">{dateLabel}</span>
+        ) : (
+          <div className="flex h-48 w-full items-center justify-center bg-gray-100 text-gray-400">
+            <span>Gambar tidak tersedia</span>
           </div>
+        )}
+        {status && (
+          <span
+            className={`absolute right-5 top-5 z-10 rounded-full px-3 py-1 text-xs font-semibold ring-1 ${badge}`}
+          >
+            {toTitleCase(status)}
+          </span>
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col pb-4 pt-2 px-4">
+        <h3 className="line-clamp-2 text-lg font-bold text-gray-800">
+          {report?.title || "Judul Laporan Tidak Tersedia"}
+        </h3>
+
+        <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+          <MapPin className="h-4 w-4 shrink-0" />
+          <p className="line-clamp-1">{addressLabel}</p>
         </div>
 
-        <div className="flex h-full flex-col p-5">
-          <div className="mb-3 flex items-center gap-2">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${badge}`}
-            >
-              {report.verification_status}
-            </span>
-            <span className="text-xs text-gray-500">{dateLabel}</span>
-            <span className="ml-auto inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
-              Progress: {report._count?.progressUpdates ?? 0}
-            </span>
-          </div>
-
-          <h3 className="line-clamp-1 text-lg font-semibold text-gray-900">
-            {report.title}
-          </h3>
-          <p className="mt-2 line-clamp-3 text-sm text-gray-700">
-            {report.description}
-          </p>
-
-          <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate font-medium text-gray-800">
-                @{report.author?.username}
-              </span>
-              <span aria-hidden>•</span>
-              <span className="truncate">{address}</span>
+        {/* ✨ Info tanggal & user dipindahkan ke bawah dan dibuat lebih rapi */}
+        <div className="mt-auto pt-4">
+          <div className="mb-3 flex items-center justify-end gap-3 text-xs text-gray-400">
+            <div className="flex items-center gap-1.5">
+              <User className="h-3 w-3" />
+              <span>{usernameLabel}</span>
             </div>
-
-            {onClick ? (
-              <button
-                onClick={onClick}
-                className="rounded-md bg-gray-900 px-3 py-1.5 text-white hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
-              >
-                Lihat Detail
-              </button>
-            ) : (
-              <a
-                href={detailsHref}
-                className="rounded-md bg-gray-900 px-3 py-1.5 text-white hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
-              >
-                Lihat Detail
-              </a>
-            )}
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-3 w-3" />
+              <span>{dateLabel}</span>
+            </div>
           </div>
+          <Button
+            href={detailsHref}
+            onClick={onClick}
+            className="w-full justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+          >
+            Lihat Detail
+          </Button>
         </div>
       </div>
     </article>
