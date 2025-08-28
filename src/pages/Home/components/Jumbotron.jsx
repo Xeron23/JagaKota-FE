@@ -50,13 +50,13 @@ export default function Jumbotron() {
                 disabled={!canReport}
                 className="mt-6 flex h-[50px] w-full transition-transform disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={() =>
-                  console.log("Mulai Lapor:", {
+                  console.log("Cari Laporan:", {
                     provinceId: province,
                     regencyId: regency,
                   })
                 }
               >
-                {canReport ? "Mulai Lapor" : "Pilih Lokasi Dulu"}
+                {canReport ? "Cari Laporan" : "Pilih Lokasi Dulu"}
               </Button>
             </div>
           </div>

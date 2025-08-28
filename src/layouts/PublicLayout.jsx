@@ -18,12 +18,12 @@ export default function PublicLayout() {
       )}
 
       <div
-        className={`flex flex-col min-h-screen transition-opacity duration-500 ${
+        className={`flex min-h-screen flex-col transition-opacity duration-500 ${
           isLoading ? "opacity-0" : "opacity-100"
         }`}
       >
         <Navbar />
-        <main className="flex-1 container mx-auto py-4">
+        <main className="container mx-auto flex-1 py-2">
           <Outlet />
         </main>
         <Footer />
