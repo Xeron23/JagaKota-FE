@@ -9,6 +9,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useEffect } from "react";
 
 export default function ReportCarrousel() {
   const {
@@ -34,6 +35,10 @@ export default function ReportCarrousel() {
       prevEl: ".custom-prev",
     },
   };
+
+  useEffect(() => {
+    console.log("Reports fetched:", reports);
+  });
 
   return (
     <section
