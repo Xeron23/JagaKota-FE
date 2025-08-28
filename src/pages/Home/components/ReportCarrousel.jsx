@@ -1,6 +1,7 @@
 import backgroundImage from "@/assets/images/reportcarrousel-background.svg";
 import ReportCard from "@/components/ReportCard";
 import { useGetReports } from "@/hooks/useGetReports";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -33,8 +34,8 @@ export default function ReportCarrousel() {
     //   clickable: true,
     // },
     navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
+      nextEl: ".custom-next",
+      prevEl: ".custom-prev",
     },
   };
 
@@ -50,19 +51,19 @@ export default function ReportCarrousel() {
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.18),transparent)]" />
         <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
         <div
-          className="absolute inset-0  bg-[length:900px_900px] bg-left-top bg-repeat opacity-55"
+          className="absolute inset-0 top-10 bg-[length:900px_900px] bg-left-top bg-repeat opacity-45"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       </div>
 
       {/* Content */}
-      <div className="mx-16 flex w-full flex-col text-left">
+      <div className="flex w-full flex-col text-left">
         <div className="mb-8 flex items-center justify-between px-12">
           <div>
             <h2 className="mb-4 text-3xl font-bold text-gray-900">
               Jelajahi Laporan Terbaru dari Warga
             </h2>
-            <p className="mb-8 max-w-2xl text-base leading-relaxed text-gray-800">
+            <p className="max-w-2xl text-base leading-relaxed text-gray-800">
               Temukan berbagai laporan kerusakan infrastruktur yang telah
               dilaporkan oleh warga di seluruh Indonesia. Bersama, kita bisa
               membuat perubahan nyata.
@@ -70,8 +71,12 @@ export default function ReportCarrousel() {
           </div>
           {loopEnabled && (
             <div className="flex items-center gap-9 self-auto">
-              <div className="swiper-button-prev !static !left-0 !h-10 !w-10 !text-black transition-colors" />
-              <div className="swiper-button-next !static !right-0 !h-10 !w-10 !text-black transition-colors" />
+              <button className="custom-prev !static left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
+                <ChevronLeft className="h-6 w-6 text-gray-700" />
+              </button>
+              <button className="custom-next !static right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
+                <ChevronRight className="h-6 w-6 text-gray-700" />
+              </button>
             </div>
           )}
         </div>
