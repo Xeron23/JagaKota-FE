@@ -87,14 +87,14 @@ export default function ReportCard({
 
   return (
     <article
-      className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition-all duration-300  ${className}`}
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${className}`}
     >
       <div className="relative">
         {report?.photoUrl ? (
           <img
             src={report.photoUrl}
             alt={report.title || "Foto laporan"}
-            className="h-48 w-full object-cover p-2 rounded-t-2xl"
+            className="h-48 w-full rounded-t-2xl object-cover"
             loading="lazy"
           />
         ) : (
@@ -102,27 +102,30 @@ export default function ReportCard({
             <span>Gambar tidak tersedia</span>
           </div>
         )}
+        {/* Gradient overlay biar teks/label lebih jelas */}
+        <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
+
         {status && (
           <span
-            className={`absolute right-5 top-5 z-10 rounded-full px-3 py-1 text-xs font-semibold ring-1 ${badge}`}
+            className={`absolute right-4 top-4 z-10 rounded-full px-3 py-1 text-xs font-semibold ring-1 backdrop-blur-sm ${badge}`}
           >
             {toTitleCase(status)}
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col pb-4 pt-2 px-4">
-        <h3 className="line-clamp-2 text-lg font-bold text-gray-800">
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
+        <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
           {report?.title || "Judul Laporan Tidak Tersedia"}
         </h3>
 
         <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
-          <MapPin className="h-4 w-4 shrink-0" />
+          <MapPin className="h-4 w-4 shrink-0 text-gray-400" />
           <p className="line-clamp-1">{addressLabel}</p>
         </div>
 
         <div className="mt-auto pt-4">
-          <div className="mb-3 flex items-center justify-end gap-3 text-xs text-gray-400">
+          <div className="mb-3 flex items-center justify-between gap-3 text-xs text-gray-400">
             <div className="flex items-center gap-1.5">
               <User className="h-3 w-3" />
               <span>{usernameLabel}</span>
@@ -135,7 +138,7 @@ export default function ReportCard({
           <Button
             href={detailsHref}
             onClick={onClick}
-            className="w-full justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            className="w-full justify-center rounded-lg bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
           >
             Lihat Detail
           </Button>
