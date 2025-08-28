@@ -2,6 +2,7 @@ import backgroundImage from "@/assets/images/reportcarrousel-background.svg";
 import ReportCard from "@/components/ReportCard";
 import { useGetReports } from "@/hooks/useGetReports";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -14,11 +15,9 @@ export default function ReportCarrousel() {
     data: reports = [],
     isLoading,
     isError,
-    error,
+    // error,
     refetch,
   } = useGetReports({ offset: 0, limit: 6 });
-
-  const loopEnabled = (reports?.length ?? 0) > 1;
 
   const swiperConfig = {
     modules: [Autoplay, Navigation, Pagination],
@@ -39,7 +38,7 @@ export default function ReportCarrousel() {
   return (
     <section
       id="reportcarrousel"
-      className="relative isolate flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-12 text-black"
+      className="relative isolate flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-20 text-black"
     >
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[#F7EEDF]">
@@ -48,7 +47,7 @@ export default function ReportCarrousel() {
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.18),transparent)]" />
         <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
         <div
-          className="absolute inset-0 top-10 bg-[length:900px_900px] bg-left-top bg-repeat opacity-45"
+          className="absolute inset-0 top-8 bg-[length:1000px_900px] bg-left-top bg-repeat opacity-45"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       </div>
@@ -66,30 +65,27 @@ export default function ReportCarrousel() {
               membuat perubahan nyata.
             </p>
           </div>
-          {loopEnabled && (
-            <div className="flex items-center gap-9 self-auto">
-              <button className="custom-prev !static left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
-                <ChevronLeft className="h-6 w-6 text-gray-700" />
-              </button>
-              <button className="custom-next !static right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
-                <ChevronRight className="h-6 w-6 text-gray-700" />
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-9 self-auto">
+            <button className="custom-prev !static left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
+              <ChevronLeft className="h-6 w-6 text-gray-700" />
+            </button>
+            <button className="custom-next !static right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100">
+              <ChevronRight className="h-6 w-6 text-gray-700" />
+            </button>
+          </div>
         </div>
 
         {isError ? (
           <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-rose-800">
             <div className="mb-2 font-semibold">Gagal memuat laporan</div>
-            <div className="text-sm">
-              {error?.message || "Terjadi kesalahan."}
-            </div>
-            <button
+            <div className="text-sm">"Terjadi kesalahan."</div>
+            {console.log("Error fetching reports:", isError)}
+            <Button
               onClick={() => refetch()}
               className="mt-3 rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white hover:bg-gray-800"
             >
               Coba lagi
-            </button>
+            </Button>
           </div>
         ) : !isLoading && reports.length === 0 ? (
           <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600">

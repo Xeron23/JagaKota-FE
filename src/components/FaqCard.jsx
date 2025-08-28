@@ -15,9 +15,7 @@ export default function FaqItem({ item, Open = false }) {
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
       >
-        <h3 className="text-sm font-medium text-gray-900 sm:text-base">
-          {item.q}
-        </h3>
+        <h3 className="font-normal text-base text-gray-900">{item.q}</h3>
         <ChevronDown
           className={`h-5 w-5 text-gray-500 transition-transform duration-300 ${
             open ? "rotate-180" : ""
@@ -30,7 +28,7 @@ export default function FaqItem({ item, Open = false }) {
           open ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="prose prose-sm px-5 pb-5 text-gray-600">
+        <div className=" px-5 pb-5 text-gray-800">
           <ReactMarkdown>{item.a}</ReactMarkdown>
         </div>
       </div>
