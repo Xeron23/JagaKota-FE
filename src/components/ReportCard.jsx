@@ -87,7 +87,7 @@ export default function ReportCard({
 
   return (
     <article
-      className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-300 ${className}`}
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition-all duration-300  ${className}`}
     >
       <div className="relative">
         {report?.photoUrl ? (
@@ -121,7 +121,6 @@ export default function ReportCard({
           <p className="line-clamp-1">{addressLabel}</p>
         </div>
 
-        {/* ✨ Info tanggal & user dipindahkan ke bawah dan dibuat lebih rapi */}
         <div className="mt-auto pt-4">
           <div className="mb-3 flex items-center justify-end gap-3 text-xs text-gray-400">
             <div className="flex items-center gap-1.5">

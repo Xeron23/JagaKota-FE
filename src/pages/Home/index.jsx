@@ -1,6 +1,7 @@
 import Jumbotron from "./components/Jumbotron";
 import AboutUs from "./components/AboutUs";
 import ReportCarrousel from "./components/ReportCarrousel";
+import Faq from "./components/Faq";
 
 function HomePage() {
   return (
@@ -8,6 +9,7 @@ function HomePage() {
       <Jumbotron />
       <AboutUs />
       <ReportCarrousel />
+      <Faq/>
     </div>
   );
 }
