@@ -36,7 +36,9 @@ export default function ProvinceRegencySelect({
   onRegencyChange,
   className = "",
   disabled = false,
-  theme = "dark", 
+  regencyError = null,
+  provinceError = null,
+  theme = "dark",
 }) {
   const {
     data: provinces = [],
@@ -91,6 +93,7 @@ export default function ProvinceRegencySelect({
             )}
           </SelectContent>
         </Select>
+        {provinceError && <p style={{ color: "red" }}>{provinceError}</p>}
         {provincesError && (
           <div className={`mt-2 text-sm ${style.error}`}>
             Gagal memuat provinsi.{" "}
@@ -117,8 +120,8 @@ export default function ProvinceRegencySelect({
                 !provinceId
                   ? "Pilih Provinsi dulu"
                   : regenciesLoading
-                  ? "Memuat..."
-                  : "Pilih Kabupaten/Kota"
+                    ? "Memuat..."
+                    : "Pilih Kabupaten/Kota"
               }
             />
           </SelectTrigger>
@@ -139,6 +142,7 @@ export default function ProvinceRegencySelect({
             )}
           </SelectContent>
         </Select>
+        {regencyError && <p style={{ color: "red" }}>{regencyError}</p>}
         {regenciesError && (
           <div className={`mt-2 text-sm ${style.error}`}>
             Gagal memuat kabupaten/kota.{" "}
