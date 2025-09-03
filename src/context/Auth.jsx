@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { useLogin, useLogout, useRefresh } from "../hooks/useAuth.jsx";
+import {
+  useLogin,
+  useLogout,
+  useRefresh,
+  useRegister,
+} from "../hooks/useAuth.jsx";
 
 const AuthContext = createContext();
 
@@ -12,49 +17,79 @@ export default function AuthProvider({ children }) {
   const loginMutation = useLogin();
   const logoutMutation = useLogout();
   const refreshMutation = useRefresh();
+  const registerMutation = useRegister();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         let token = localStorage.getItem("token");
-        let user = localStorage.getItem("user");
+        let userData = localStorage.getItem("user");
+
         if (token) {
           const data = jwtDecode(token);
           const now = Date.now() / 1000;
 
           if (data.exp < now) {
             localStorage.removeItem("token");
-            // Try to refresh token
+            localStorage.removeItem("user");
             try {
               const newToken = await refreshMutation.mutateAsync();
               if (newToken) {
                 setIsAuth(true);
-                setUser(newToken);
+                // Decode the new token to get user info
+                const decodedUser = jwtDecode(newToken);
+                setUser(decodedUser);
               }
             } catch (error) {
               console.error("Failed to refresh token:", error);
-              window.location.href = "/login";
+              setIsAuth(false);
+              setUser({});
             }
           } else {
             setIsAuth(true);
-            setUser(user);
+            setUser(userData ? JSON.parse(userData) : {});
           }
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        window.location.href = "/login";
+        setIsAuth(false);
+        setUser({});
       }
       setIsChecking(false);
     };
 
     checkAuth();
-  }, [refreshMutation]);
+  }, []);
 
-  const login = async (username, password) => {
+  const login = async (identifier, password) => {
     try {
-      const result = await loginMutation.mutateAsync({ username, password });
+      const result = await loginMutation.mutateAsync({ identifier, password });
+      const { username, email, role, token } = result;
+      const userData = { username, email, role };
+
+      // Store user data and token
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+
       setIsAuth(true);
-      setUser(result.data?.name || username);
+      setUser(userData);
+
+      return {
+        success: true,
+        data: result,
+        role: role,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        error: err,
+      };
+    }
+  };
+
+  const register = async (formData) => {
+    try {
+      const result = await registerMutation.mutateAsync(formData);
       return {
         success: true,
         data: result,
@@ -62,7 +97,7 @@ export default function AuthProvider({ children }) {
     } catch (err) {
       return {
         success: false,
-        error: err.message,
+        error: err,
       };
     }
   };
@@ -72,9 +107,14 @@ export default function AuthProvider({ children }) {
       const token = localStorage.getItem("token");
       await logoutMutation.mutateAsync(token);
       setIsAuth(false);
-      setUser(null);
+      setUser({});
       return { success: true };
     } catch (error) {
+      // Even if logout fails, clear local state
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setIsAuth(false);
+      setUser({});
       return {
         success: false,
         error: error.message,
@@ -89,8 +129,16 @@ export default function AuthProvider({ children }) {
         isChecking,
         user,
         login,
+        register,
         logout,
-        isLoading: loginMutation.isPending || logoutMutation.isPending,
+        isLoading:
+          loginMutation.isPending ||
+          logoutMutation.isPending ||
+          registerMutation.isPending,
+        loginError: loginMutation.error,
+        registerError: registerMutation.error,
+        isLoginPending: loginMutation.isPending,
+        isRegisterPending: registerMutation.isPending,
       }}
     >
       {children}

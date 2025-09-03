@@ -6,7 +6,7 @@ import ButtonSubmit from "../../components/Button.jsx";
 import Alert from "../../components/Alert.jsx";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect.jsx";
 
-import { useRegister } from "@/hooks/useAuth.jsx";
+import { useAuth } from "@/context/Auth.jsx";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -22,18 +22,16 @@ function Register() {
   });
 
   const navigate = useNavigate();
+  const { register, isRegisterPending, registerError } = useAuth();
 
-  const registerMutation = useRegister();
-
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    registerMutation.mutate(formData, {
-      onSuccess: () => {
-        // alert("Pendaftaran berhasil! Silakan masuk.");
-        navigate("/login");
-      },
-    });
+    const result = await register(formData);
+
+    if (result.success) {
+      navigate("/login");
+    }
   };
 
   const handleChange = (e) => {
@@ -49,19 +47,16 @@ function Register() {
     setFormData((prev) => ({ ...prev, regencyId }));
   };
 
-  const apiError = registerMutation.error;
-
   // cek apakah error nya object atau string
   const fieldErrors =
-    typeof apiError === "object" &&
-    apiError !== null &&
-    !(apiError instanceof Error)
-      ? apiError
+    typeof registerError === "object" &&
+    registerError !== null &&
+    !(registerError instanceof Error)
+      ? registerError
       : {};
 
-  console.log(fieldErrors);
-
-  const generalError = apiError instanceof Error ? apiError.message : null;
+  const generalError =
+    registerError instanceof Error ? registerError.message : null;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
@@ -82,7 +77,7 @@ function Register() {
               onChange={handleChange}
               placeholder="John"
               error={fieldErrors.firstName}
-              disabled={registerMutation.isPending}
+              disabled={isRegisterPending}
             />
             <Input
               label="Nama Belakang (Optional)"
@@ -91,7 +86,7 @@ function Register() {
               onChange={handleChange}
               placeholder="Doe"
               error={fieldErrors.lastName}
-              disabled={registerMutation.isPending}
+              disabled={isRegisterPending}
             />
           </div>
 
@@ -102,7 +97,7 @@ function Register() {
             onChange={handleChange}
             placeholder="johndoe123"
             error={fieldErrors.username}
-            disabled={registerMutation.isPending}
+            disabled={isRegisterPending}
           />
           <Input
             label="Email"
@@ -112,7 +107,7 @@ function Register() {
             onChange={handleChange}
             placeholder="johndoe123@example.com"
             error={fieldErrors.email}
-            disabled={registerMutation.isPending}
+            disabled={isRegisterPending}
           />
           <Input
             label="Password"
@@ -122,7 +117,7 @@ function Register() {
             onChange={handleChange}
             placeholder="********"
             error={fieldErrors.password}
-            disabled={registerMutation.isPending}
+            disabled={isRegisterPending}
           />
           <Input
             label="Nomor Telepon"
@@ -131,7 +126,7 @@ function Register() {
             onChange={handleChange}
             placeholder="081234567890"
             error={fieldErrors.phoneNumber}
-            disabled={registerMutation.isPending}
+            disabled={isRegisterPending}
           />
           <Input
             label="Alamat Jalan"
@@ -140,7 +135,7 @@ function Register() {
             onChange={handleChange}
             placeholder="Jl. Diponegoro No. 12"
             error={fieldErrors.street}
-            disabled={registerMutation.isPending}
+            disabled={isRegisterPending}
           />
 
           <ProvinceRegencySelect
@@ -156,9 +151,9 @@ function Register() {
           <div className="pt-4">
             <ButtonSubmit
               style="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-semibold"
-              disabled={registerMutation.isPending}
+              disabled={isRegisterPending}
             >
-              {registerMutation.isPending ? "Mendaftar..." : "Daftar"}
+              {isRegisterPending ? "Mendaftar..." : "Daftar"}
             </ButtonSubmit>
           </div>
         </form>
@@ -166,7 +161,7 @@ function Register() {
         <p className="mt-6 text-center text-sm text-gray-600">
           Sudah punya akun?{" "}
           <Link
-            href="/login"
+            to="/login"
             className="font-medium text-blue-600 hover:underline"
           >
             Masuk di sini

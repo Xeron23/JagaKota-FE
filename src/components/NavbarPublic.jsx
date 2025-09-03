@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
 import { useAuth } from "@/context/Auth"; // Adjust path if necessary
+import { useLogout } from "@/hooks/useAuth";
 
 const NavbarMenu = [
   { name: "Beranda", href: "#beranda" },
@@ -13,8 +14,9 @@ const NavbarMenu = [
 
 const Navbar = () => {
   const [elevated, setElevated] = useState(false);
-  const { isAuth, isChecking, user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { isAuth, isChecking, user } = useAuth();
+  // const navigate = useNavigate();
+  const logoutMutation = useLogout();
 
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 8);
@@ -24,9 +26,9 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await logout();
-    // Navigate to login page after logout is complete
-    navigate("/login");
+    await logoutMutation.mutateAsync();
+    // // Navigate to login page after logout is complete
+    // navigate("/login");
   };
 
   const renderAuthButtons = () => {

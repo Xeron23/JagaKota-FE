@@ -9,7 +9,7 @@ export const getAllReports = async (offset = 0, limit = 10) => {
       params: { offset, limit },
     });
     const payload = res.data;
-    return payload.data; // returns the array of reports
+    return payload.data; 
   } catch (error) {
     const res = error?.response?.data;
     const msg =

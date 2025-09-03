@@ -5,7 +5,7 @@ import ButtonSubmit from "../../components/Button.jsx";
 import Input from "../../components/Input.jsx";
 import Alert from "../../components/Alert.jsx";
 
-import { useLogin } from "../../hooks/useAuth.jsx";
+import { useAuth } from "../../context/Auth.jsx";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -14,28 +14,22 @@ function Login() {
   });
 
   const navigate = useNavigate();
-  const loginMutation = useLogin();
+  const { login, isLoginPending, loginError } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    loginMutation.mutate(formData, {
-      onSuccess: (data) => {
-        const { username, email, role, token } = data;
-        const user = { username, email, role };
+    const result = await login(formData.identifier, formData.password);
 
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
+    if (result.success) {
+      const { role } = result;
 
-        if (role === "ADMIN") {
-          navigate("/dashboard");
-        }
-
-        if (role === "USER") {
-          navigate("/");
-        }
-      },
-    });
+      if (role === "ADMIN") {
+        navigate("/dashboard");
+      } else if (role === "USER") {
+        navigate("/");
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -46,19 +40,14 @@ function Login() {
     }));
   };
 
-  const apiError = loginMutation.error;
-
   const fieldErrors =
-    typeof apiError === "object" &&
-    apiError !== null &&
-    !(apiError instanceof Error)
-      ? apiError
+    typeof loginError === "object" &&
+    loginError !== null &&
+    !(loginError instanceof Error)
+      ? loginError
       : {};
 
-  console.log(fieldErrors);
-  console.log(formData.identifier);
-
-  const generalError = apiError instanceof Error ? apiError.message : null;
+  const generalError = loginError instanceof Error ? loginError.message : null;
 
   return (
     <div
@@ -87,7 +76,7 @@ function Login() {
             onChange={handleChange}
             placeholder="budi123/budi@gmail.com"
             error={fieldErrors.identifier}
-            disabled={loginMutation.isPending}
+            disabled={isLoginPending}
           />
 
           <Input
@@ -99,15 +88,15 @@ function Login() {
             onChange={handleChange}
             placeholder="********"
             error={fieldErrors.password}
-            disabled={loginMutation.isPending}
+            disabled={isLoginPending}
           />
 
           <div className="mt-6 flex flex-col items-center gap-2 p-4">
             <ButtonSubmit
               style="h-[42px] w-[312px] bg-[#6B8F71] text-white py-2 px-4 rounded-md hover:bg-[#6B8F71] transition-colors duration-200 mb-2"
-              disabled={loginMutation.isPending}
+              disabled={isLoginPending}
             >
-              {loginMutation.isPending ? "Masuk..." : "Login"}
+              {isLoginPending ? "Masuk..." : "Login"}
             </ButtonSubmit>
 
             <a
