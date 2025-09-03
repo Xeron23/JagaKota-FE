@@ -102,6 +102,7 @@ export default function ReportCard({
             <span>Gambar tidak tersedia</span>
           </div>
         )}
+
         {/* Gradient overlay biar teks/label lebih jelas */}
         <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
 
@@ -138,7 +139,7 @@ export default function ReportCard({
           <Button
             href={detailsHref}
             onClick={onClick}
-            className="w-full justify-center rounded-lg bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            className="transition-color duration-600 w-full justify-center rounded-lg bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
           >
             Lihat Detail
           </Button>

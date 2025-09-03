@@ -1,88 +1,120 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Login, Logout, Refresh, Register } from "../resolver/auth/authApp.js";
+import {
+  useLogin,
+  useLogout,
+  useRefresh,
+  useRegister,
+} from "../hooks/useAuth.jsx";
+
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export default function AuthProvider({ children }) {
   const [isAuth, setIsAuth] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
-  const [user, setUser] = useState("");
-  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
+
+  const loginMutation = useLogin();
+  const logoutMutation = useLogout();
+  const refreshMutation = useRefresh();
+  const registerMutation = useRegister();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         let token = localStorage.getItem("token");
+        let userData = localStorage.getItem("user");
+
         if (token) {
           const data = jwtDecode(token);
           const now = Date.now() / 1000;
-          if (data.exp >= now) {
+
+          if (data.exp < now) {
             localStorage.removeItem("token");
-            token = await Refresh();
-            localStorage.setItem("token", token);
+            localStorage.removeItem("user");
+            try {
+              const newToken = await refreshMutation.mutateAsync();
+              if (newToken) {
+                setIsAuth(true);
+                // Decode the new token to get user info
+                const decodedUser = jwtDecode(newToken);
+                setUser(decodedUser);
+              }
+            } catch (error) {
+              console.error("Failed to refresh token:", error);
+              setIsAuth(false);
+              setUser({});
+            }
+          } else {
+            setIsAuth(true);
+            setUser(userData ? JSON.parse(userData) : {});
           }
-          setIsAuth(true);
-          setUser(token);
         }
       } catch (error) {
-        alert(error.message);
-        // auto redirecr when gagal
-        window.location.href = "/login";
+        console.error("Auth check failed:", error);
+        setIsAuth(false);
+        setUser({});
       }
-
       setIsChecking(false);
     };
+
     checkAuth();
   }, []);
 
-  const login = async (username, password) => {
+  const login = async (identifier, password) => {
     try {
-      // hit api (/user/login)
-      const userLogin = await Login(username, password);
-      localStorage.setItem("token", userLogin.accessToken);
+      const result = await loginMutation.mutateAsync({ identifier, password });
+      const { username, email, role, token } = result;
+      const userData = { username, email, role };
+
+      // Store user data and token
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
 
       setIsAuth(true);
-      setUser(userLogin.data.name);
+      setUser(userData);
+
       return {
         success: true,
-        data: userLogin,
+        data: result,
+        role: role,
       };
     } catch (err) {
       return {
         success: false,
-        error: err.message,
+        error: err,
       };
     }
   };
 
-  const register = async ({ username, name, password }) => {
+  const register = async (formData) => {
     try {
-      const data = { username, name, password };
-      const userRegis = await Register(data);
+      const result = await registerMutation.mutateAsync(formData);
       return {
         success: true,
-        data: userRegis,
+        data: result,
       };
-    } catch (error) {
-      // console.log("test err: ", error.message);
+    } catch (err) {
       return {
         success: false,
-        error: error.message,
+        error: err,
       };
     }
   };
 
   const logout = async () => {
     try {
-      const user = await Logout(token);
-
-      if (user == "ok") {
-        localStorage.removeItem("token");
-        setIsAuth(false);
-        setUser(null);
-      }
+      const token = localStorage.getItem("token");
+      await logoutMutation.mutateAsync(token);
+      setIsAuth(false);
+      setUser({});
+      return { success: true };
     } catch (error) {
+      // Even if logout fails, clear local state
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setIsAuth(false);
+      setUser({});
       return {
         success: false,
         error: error.message,
@@ -92,14 +124,28 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuth, isChecking, user, login, logout, register }}
+      value={{
+        isAuth,
+        isChecking,
+        user,
+        login,
+        register,
+        logout,
+        isLoading:
+          loginMutation.isPending ||
+          logoutMutation.isPending ||
+          registerMutation.isPending,
+        loginError: loginMutation.error,
+        registerError: registerMutation.error,
+        isLoginPending: loginMutation.isPending,
+        isRegisterPending: registerMutation.isPending,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 }
 
-// use this for get
 export const useAuth = () => {
   return useContext(AuthContext);
 };
