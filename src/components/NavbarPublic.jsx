@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
-import { useAuth } from "@/context/Auth"; // Adjust path if necessary
+import { useAuth } from "@/context/Auth";
 import { useLogout } from "@/hooks/useAuth";
 
 const NavbarMenu = [
@@ -14,9 +14,7 @@ const NavbarMenu = [
 
 const Navbar = () => {
   const [elevated, setElevated] = useState(false);
-  const { isAuth, isChecking, user } = useAuth();
-  // const navigate = useNavigate();
-  const logoutMutation = useLogout();
+  const { isAuth, isChecking, user, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 8);
@@ -26,8 +24,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await logoutMutation.mutateAsync();
-    // // Navigate to login page after logout is complete
+    await logout();
     // navigate("/login");
   };
 
