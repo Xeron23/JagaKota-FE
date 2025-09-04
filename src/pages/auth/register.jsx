@@ -1,105 +1,171 @@
 import { useState } from "react";
-import { useAuth } from "../../context/Auth.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import Input from "../../components/Input.jsx";
-import schemaRegister from "../../schema/register.js";
 import ButtonSubmit from "../../components/Button.jsx";
+import Alert from "../../components/Alert.jsx";
+import ProvinceRegencySelect from "@/components/ProvinceRegencySelect.jsx";
+
+import { useAuth } from "@/context/Auth.jsx";
 
 function Register() {
   const [formData, setFormData] = useState({
     username: "",
-    name: "",
+    firstName: "",
+    lastName: "",
+    email: "",
     password: "",
+    phoneNumber: "",
+    street: "",
+    provinceId: "",
+    regencyId: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState({});
-  const { register } = useAuth();
   const navigate = useNavigate();
+  const { register, isRegisterPending, registerError } = useAuth();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    try {
-      await schemaRegister.validate(formData, { abortEarly: false });
-      setErrorMessage({});
+    const result = await register(formData);
 
-      const userRegis = await register({
-        username: formData.username,
-        name: formData.name,
-        password: formData.password,
-      });
-
-      if (userRegis.success) {
-        navigate("/login");
-      }
-      if (userRegis.error) {
-        setErrorMessage({ err: userRegis.error });
-      }
-    } catch (err) {
-      if (err.inner) {
-        const errorObj = {};
-        err.inner.forEach((e) => {
-          errorObj[e.path] = e.message;
-        });
-        setErrorMessage(errorObj);
-      }
+    if (result.success) {
+      navigate("/login");
     }
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleProvinceChange = (provinceId) => {
+    setFormData((prev) => ({ ...prev, provinceId, regencyId: "" }));
+  };
+
+  const handleRegencyChange = (regencyId) => {
+    setFormData((prev) => ({ ...prev, regencyId }));
+  };
+
+  // cek apakah error nya object atau string
+  const fieldErrors =
+    typeof registerError === "object" &&
+    registerError !== null &&
+    !(registerError instanceof Error)
+      ? registerError
+      : {};
+
+  const generalError =
+    registerError instanceof Error ? registerError.message : null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">
-          Register
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="w-full max-w-2xl rounded-lg bg-white p-8 shadow-lg">
+        <h2 className="mb-6 text-center text-3xl font-bold text-gray-800">
+          Buat Akun Baru
         </h2>
-        <form onSubmit={handleRegister}>
+
+        {/* Tampilkan alert untuk error umum */}
+        {generalError && <Alert message={generalError} type="danger" />}
+
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Nama Depan"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="John"
+              error={fieldErrors.firstName}
+              disabled={isRegisterPending}
+            />
+            <Input
+              label="Nama Belakang (Optional)"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="Doe"
+              error={fieldErrors.lastName}
+              disabled={isRegisterPending}
+            />
+          </div>
+
           <Input
             label="Username"
             name="username"
             value={formData.username}
-            id="username"
             onChange={handleChange}
-            placeholder="budi123"
-            error={errorMessage.username}
+            placeholder="johndoe123"
+            error={fieldErrors.username}
+            disabled={isRegisterPending}
           />
-
           <Input
-            label="Name"
-            name="name"
-            value={formData.name}
-            id="name"
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
             onChange={handleChange}
-            placeholder="budi subianto"
-            error={errorMessage.name}
+            placeholder="johndoe123@example.com"
+            error={fieldErrors.email}
+            disabled={isRegisterPending}
           />
-
           <Input
             label="Password"
             name="password"
             type="password"
             value={formData.password}
-            id="password"
             onChange={handleChange}
             placeholder="********"
-            error={errorMessage.password}
+            error={fieldErrors.password}
+            disabled={isRegisterPending}
           />
-          <ButtonSubmit
-            onClick={null}
-            style="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
-          >
-            Login
-          </ButtonSubmit>
+          <Input
+            label="Nomor Telepon"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            placeholder="081234567890"
+            error={fieldErrors.phoneNumber}
+            disabled={isRegisterPending}
+          />
+          <Input
+            label="Alamat Jalan"
+            name="street"
+            value={formData.street}
+            onChange={handleChange}
+            placeholder="Jl. Diponegoro No. 12"
+            error={fieldErrors.street}
+            disabled={isRegisterPending}
+          />
+
+          <ProvinceRegencySelect
+            provinceId={formData.provinceId}
+            regencyId={formData.regencyId}
+            onProvinceChange={handleProvinceChange}
+            onRegencyChange={handleRegencyChange}
+            regencyError={fieldErrors.regencyId}
+            provinceError={fieldErrors.provinceId}
+            theme="light"
+          />
+
+          <div className="pt-4">
+            <ButtonSubmit
+              style="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-semibold"
+              disabled={isRegisterPending}
+            >
+              {isRegisterPending ? "Mendaftar..." : "Daftar"}
+            </ButtonSubmit>
+          </div>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Sudah punya akun?{" "}
-          <a href="/login" className="text-blue-500 hover:underline">
-            Login
-          </a>
+          <Link
+            to="/login"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Masuk di sini
+          </Link>
         </p>
       </div>
     </div>
@@ -107,16 +173,3 @@ function Register() {
 }
 
 export default Register;
-
-// function reverseGeocode(lat, lon) {
-//   fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`)
-//     .then(res => res.json())
-//     .then(data => {
-//       console.log("Alamat lengkap:", data.display_name);
-//       console.log("Kota:", data.address.city || data.address.town || data.address.village);
-//       console.log("Provinsi:", data.address.state);
-//       console.log("Negara:", data.address.country);
-//       console.log("Jalan:", data.address.road);
-//     })
-//     .catch(err => console.error("Gagal reverse geocoding:", err));
-// }

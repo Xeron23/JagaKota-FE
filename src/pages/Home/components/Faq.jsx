@@ -14,7 +14,7 @@ export default function Faq({ faqs = faq, className = "" }) {
         <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
 
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="mx-auto max-w-3xl space-y-3">
         <h2
           id="faq-heading"
           className="text-center text-4xl font-bold text-gray-900"
