@@ -1,35 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import http from "../lib/axios";
 
-const api = import.meta.env.VITE_API_BASE_URL ?? "";
+const fetchReports = async ({
+  offset = 1,
+  limit = 10,
+  provinceId,
+  regencyId,
+} = {}) => {
+  const params = { offset, limit };
+  if (provinceId) params.provinceId = Number(provinceId);
+  if (regencyId) params.regencyId = Number(regencyId);
 
-export const getAllReports = async (offset = 0, limit = 10) => {
-  try {
-    const res = await axios.get(`${api}/report`, {
-      params: { offset, limit },
-    });
-    const payload = res.data;
-    return payload.data; 
-  } catch (error) {
-    const res = error?.response?.data;
-    const msg =
-      typeof res?.errors === "string"
-        ? res.errors
-        : res?.errors
-          ? Object.values(res.errors).join(", ")
-          : res?.message || error.message || "Gagal memuat laporan";
-    throw new Error(msg);
-  }
+  const res = await http.get("/report", { params });
+  const data = res?.data?.data ?? [];
+  const meta = res?.data?.meta ?? {
+    page: Number(offset) || 1,
+    limit: Number(limit) || 10,
+    total: data.length,
+    totalPages: 1,
+  };
+  return { data, meta };
 };
 
-export const useGetReports = (options = {}) => {
-  const { offset = 0, limit = 10, ...queryOptions } = options;
-
-  return useQuery({
-    queryKey: ["reports", { offset, limit }],
-    queryFn: () => getAllReports(offset, limit),
-    cacheTime: 1200 * 60 * 1000, // 1200 minutes
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    ...queryOptions,
+export const useGetReports = (params) =>
+  useQuery({
+    queryKey: ["reports", params],
+    queryFn: () => fetchReports(params),
+    keepPreviousData: true,
+    staleTime: 30_000,
   });
-};

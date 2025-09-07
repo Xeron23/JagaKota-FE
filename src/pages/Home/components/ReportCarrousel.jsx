@@ -16,7 +16,6 @@ export default function ReportCarrousel() {
     data: reports = [],
     isLoading,
     isError,
-    // error,
     refetch,
   } = useGetReports({ offset: 0, limit: 6 });
 
