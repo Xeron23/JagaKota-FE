@@ -1,35 +1,63 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import http from "../lib/axios";
 
-const api = import.meta.env.VITE_API_BASE_URL ?? "";
+const fetchReports = async ({
+  offset = 1,
+  limit = 10,
+  provinceId,
+  regencyId,
+  stage,
+  verificationStatus: progress,
+} = {}) => {
+  const params = { offset, limit };
+  if (provinceId) params.provinceId = Number(provinceId);
+  if (regencyId) params.regencyId = Number(regencyId);
+  if (stage) params.stage = stage;
+  if (progress) params.status = progress;
 
-export const getAllReports = async (offset = 0, limit = 10) => {
+  console.log("Fetching reports with params:", params);
   try {
-    const res = await axios.get(`${api}/report`, {
-      params: { offset, limit },
-    });
-    const payload = res.data;
-    return payload.data; 
+    const res = await http.get("/report", { params });
+    const data = Array.isArray(res?.data?.data) ? res.data.data : [];
+    const meta = res?.data?.meta ?? {
+      page: Number(offset) || 1,
+      limit: Number(limit) || 10,
+      total: data.length,
+      totalPages: data.length
+        ? Math.ceil(data.length / (Number(limit) || 10))
+        : 0,
+    };
+    const message = res?.data?.message;
+    const status = res?.data?.status ?? true;
+    const code = res?.data?.code;
+
+    return { data, meta, message, status, code };
   } catch (error) {
-    const res = error?.response?.data;
-    const msg =
-      typeof res?.errors === "string"
-        ? res.errors
-        : res?.errors
-          ? Object.values(res.errors).join(", ")
-          : res?.message || error.message || "Gagal memuat laporan";
-    throw new Error(msg);
+    if (error?.response?.status === 404) {
+      const message =
+        error?.response?.data?.message || "Laporan tidak ditemukan";
+      return {
+        data: [],
+        meta: {
+          page: Number(offset) || 1,
+          limit: Number(limit) || 10,
+          total: 0,
+          totalPages: 0,
+        },
+        message,
+        status: false,
+        code: 404,
+      };
+    }
+    throw error;
   }
 };
 
-export const useGetReports = (options = {}) => {
-  const { offset = 0, limit = 10, ...queryOptions } = options;
-
-  return useQuery({
-    queryKey: ["reports", { offset, limit }],
-    queryFn: () => getAllReports(offset, limit),
-    cacheTime: 1200 * 60 * 1000, // 1200 minutes
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    ...queryOptions,
+export const useGetReports = (params) =>
+  useQuery({
+    queryKey: ["reports", params],
+    queryFn: () => fetchReports(params),
+    keepPreviousData: true,
+    // cacheTime: 5 * 60 * 1000,
+    staleTime: 30_000,
   });
-};

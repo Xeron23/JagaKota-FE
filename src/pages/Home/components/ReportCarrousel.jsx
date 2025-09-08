@@ -12,13 +12,10 @@ import "swiper/css/pagination";
 import { useEffect } from "react";
 
 export default function ReportCarrousel() {
-  const {
-    data: reports = [],
-    isLoading,
-    isError,
-    // error,
-    refetch,
-  } = useGetReports({ offset: 0, limit: 6 });
+  const { data, isLoading, isError, refetch } = useGetReports({
+    offset: 0,
+    limit: 6,
+  });
 
   const swiperConfig = {
     modules: [Autoplay, Navigation, Pagination],
@@ -35,6 +32,8 @@ export default function ReportCarrousel() {
       prevEl: ".custom-prev",
     },
   };
+
+  const reports = data?.data ?? [];
 
   useEffect(() => {
     console.log("Reports fetched:", reports);
