@@ -8,6 +8,7 @@ import Spinner from "./components/Loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
+import ReportPage from "./pages/Report/index.jsx";
 
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
@@ -22,6 +23,16 @@ function App() {
         {
           index: true,
           element: <HomePage />,
+        },
+      ],
+    },
+    {
+      path: "/laporan",
+      element: <PublicLayout />,
+      children: [
+        {
+          index: true,
+          element: <ReportPage />,
         },
       ],
     },

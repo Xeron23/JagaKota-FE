@@ -1,15 +1,22 @@
-// src/components/Navbar.jsx (or wherever you placed it)
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
 import { useAuth } from "@/context/Auth";
-import { useLogout } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NavbarMenu = [
   { name: "Beranda", href: "#beranda" },
-  { name: "Laporan", href: "#laporan" },
+  { name: "Laporan", href: "laporan" },
 ];
 
 const Navbar = () => {
@@ -25,7 +32,6 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
-    // navigate("/login");
   };
 
   const renderAuthButtons = () => {
@@ -39,28 +45,55 @@ const Navbar = () => {
     }
 
     if (isAuth) {
+      const initial = (user?.username?.[0] || "U").toUpperCase();
       return (
-        <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-gray-700">
-            Hi, {user.username}!
-          </span>
-          <Button asChild variant="ghost" size="sm" className="px-4">
-            <Link to="/profile">Profile</Link>
-          </Button>
-          <Button onClick={handleLogout} size="sm" className="px-4">
-            Logout
-          </Button>
+        <div className="flex items-center space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="px-2">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user?.avatarUrl} alt={user?.username} />
+                    <AvatarFallback>{initial}</AvatarFallback>
+                  </Avatar>
+                  <span className="hidden text-sm font-medium text-gray-700 sm:inline">
+                    {user?.username}
+                  </span>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>
+                <div className="text-xs text-gray-500">Signed in as</div>
+                <div className="truncate font-medium">{user?.username}</div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-red-600 focus:text-red-600"
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     }
 
-    // User is not logged in
     return (
       <div className="flex items-center space-x-3">
         <Button asChild variant="outline" size="sm" className="px-4">
           <Link to="/register">Sign Up</Link>
         </Button>
-        <Button asChild size="sm" className="px-4">
+        <Button
+          asChild
+          size="sm"
+          className="transition-color duration-600 w-full justify-center rounded-lg bg-gradient-to-r from-gray-900 to-gray-700 px-6 py-2 text-sm font-medium text-white shadow-md hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+        >
           <Link to="/login">Login</Link>
         </Button>
       </div>
