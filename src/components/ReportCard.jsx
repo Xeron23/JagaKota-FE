@@ -85,7 +85,6 @@ export default function ReportCard({
     ? `@${report.author.username}`
     : "Pengguna anonim";
 
-  console.log({ report });
   return (
     <article
       className={`group flex flex-col overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${className}`}

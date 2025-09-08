@@ -1,23 +1,41 @@
 import React, { useMemo, useState } from "react";
 import { useGetReports } from "@/hooks/useGetReports";
-import ReportCard from "@/components/ReportCard";
-import { Button } from "@/components/ui/button";
-import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
+import ReportFilter from "./components/ReportFilter";
+import ReportPagination from "./components/ReportPagination";
+import ReportGrid from "./components/ReportGrid";
 
 const ReportPage = () => {
   const [page, setPage] = useState(1); // offset
-  const [provinceId, setProvinceId] = useState("");
-  const [regencyId, setRegencyId] = useState("");
+
+  const [draftProvinceId, setDraftProvinceId] = useState("");
+  const [draftRegencyId, setDraftRegencyId] = useState("");
+  const [draftStage, setDraftStage] = useState("");
+  const [draftProgress, setDraftProgress] = useState("");
+
+  const [appliedProvinceId, setAppliedProvinceId] = useState("");
+  const [appliedRegencyId, setAppliedRegencyId] = useState("");
+  const [appliedStage, setAppliedStage] = useState("");
+  const [appliedProgress, setAppliedProgress] = useState("");
+
   const LIMIT = 10;
 
   const queryParams = useMemo(
     () => ({
       offset: page,
       limit: LIMIT,
-      provinceId: provinceId || undefined,
-      regencyId: regencyId || undefined,
+      provinceId: appliedProvinceId || undefined,
+      regencyId: appliedRegencyId || undefined,
+      stage: appliedStage || undefined,
+      progress: appliedProgress || undefined,
     }),
-    [page, LIMIT, provinceId, regencyId],
+    [
+      page,
+      LIMIT,
+      appliedProvinceId,
+      appliedRegencyId,
+      appliedStage,
+      appliedProgress,
+    ],
   );
 
   const { data, isLoading, isError, error, isFetching } =
@@ -25,109 +43,66 @@ const ReportPage = () => {
   const reports = data?.data ?? [];
   const meta = data?.meta ?? { page, limit: LIMIT, total: 0, totalPages: 1 };
 
-  const onApplyFilter = () => {
+  const handleApplyFilter = () => {
+    setAppliedProvinceId(draftProvinceId || "");
+    setAppliedRegencyId(draftRegencyId || "");
+    setAppliedStage(draftStage || "");
+    setAppliedProgress(draftProgress || "");
     setPage(1);
   };
 
-  const onResetFilter = () => {
-    setProvinceId("");
-    setRegencyId("");
+  const handleResetFilter = () => {
+    setDraftProvinceId("");
+    setDraftRegencyId("");
+    setDraftStage("");
+    setDraftProgress("");
+    setAppliedProvinceId("");
+    setAppliedRegencyId("");
+    setAppliedStage("");
+    setAppliedProgress("");
     setPage(1);
   };
 
   return (
     <div className="px-6 py-8">
-      {/* Jumbotron Filter */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-800">Semua Laporan</h1>
-        <p className="mt-1 text-slate-600">
-          Cari laporan berdasarkan provinsi dan kabupaten/kota.
-        </p>
+      <ReportFilter
+        provinceId={draftProvinceId}
+        regencyId={draftRegencyId}
+        onProvinceChange={(id) => {
+          setDraftProvinceId(id);
+          setDraftRegencyId("");
+        }}
+        onRegencyChange={setDraftRegencyId}
+        stage={draftStage}
+        progress={draftProgress}
+        onStageChange={setDraftStage}
+        onProgressChange={setDraftProgress}
+        onApply={handleApplyFilter}
+        onReset={handleResetFilter}
+      />
 
-        <div className="mt-5 space-y-4">
-          <ProvinceRegencySelect
-            provinceId={provinceId}
-            regencyId={regencyId}
-            onProvinceChange={setProvinceId}
-            onRegencyChange={setRegencyId}
-            theme="light"
-          />
+      <ReportGrid
+        reports={reports}
+        isLoading={isLoading}
+        isError={isError}
+        errorMessage={error?.message}
+        emptyMessage={data?.message || "Tidak ada laporan ditemukan"}
+      />
 
-          <div className="flex items-end gap-2">
-            <Button onClick={onApplyFilter} className="w-full sm:w-auto">
-              Terapkan
-            </Button>
-            <Button
-              variant="outline"
-              onClick={onResetFilter}
-              className="w-full sm:w-auto"
-            >
-              Reset
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Status Bar */}
-      <div className="mb-4 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
-        <div className="text-sm text-slate-600">
-          {isFetching
-            ? "Memuat..."
-            : `Halaman ${meta.page} dari ${meta.totalPages} • Total ${meta.total} laporan`}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={isLoading || meta.page <= 1}
-          >
-            Prev
-          </Button>
-          <Button
-            onClick={() =>
-              setPage((p) =>
-                meta.totalPages ? Math.min(meta.totalPages, p + 1) : p + 1,
-              )
-            }
-            disabled={
-              isLoading ||
-              (meta.totalPages ? meta.page >= meta.totalPages : false)
-            }
-          >
-            Next
-          </Button>
-        </div>
-      </div>
-
-      {/* List Reports */}
-      {isError && (
-        <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error?.message || "Gagal memuat laporan"}
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-40 animate-pulse rounded-lg bg-slate-200"
-            />
-          ))}
-        </div>
-      ) : reports.length === 0 ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-center text-slate-600">
-          Tidak ada laporan ditemukan.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {reports.map((r) => (
-            <ReportCard key={r.report_id} report={r} />
-          ))}
-        </div>
-      )}
+      <ReportPagination
+        page={meta.page}
+        totalPages={meta.totalPages}
+        total={meta.total}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        onPrev={() => setPage((p) => Math.max(1, p - 1))}
+        onNext={() =>
+          setPage((p) =>
+            meta.totalPages ? Math.min(meta.totalPages, p + 1) : p + 1,
+          )
+        }
+      />
     </div>
   );
 };
-
 export default ReportPage;
