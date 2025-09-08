@@ -3,27 +3,17 @@ import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
 import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/FilterSelect";
 
-const STAGE_OPTIONS = [
-  { label: "Review", value: "REVIEW" },
-  { label: "In Progress", value: "INPROGRESS" },
-  { label: "Completed", value: "COMPLETED" },
-];
-
-const VERIFICATION_STATUS_OPTIONS = [
-  { label: "Pending", value: "PENDING" },
-  { label: "Verified", value: "VERIFIED" },
-  { label: "Rejected", value: "REJECTED" },
-];
+// const STAGE_OPTIONS = [
+//   { label: "Review", value: "REVIEW" },
+//   { label: "In Progress", value: "INPROGRESS" },
+//   { label: "Completed", value: "COMPLETED" },
+// ];
 
 const ReportFilter = ({
   provinceId,
   regencyId,
   onProvinceChange,
   onRegencyChange,
-  stage,
-  progress,
-  onStageChange,
-  onProgressChange,
   onApply,
   onReset,
 }) => {
@@ -58,25 +48,6 @@ const ReportFilter = ({
             </Button>
           </div>
         </div>
-      </div>
-
-      <div className="flex justify-end space-x-4 mb-4">
-        <FilterSelect
-          label="Stage (Progress)"
-          placeholder="Pilih stage"
-          options={STAGE_OPTIONS}
-          value={stage}
-          onChange={onStageChange}
-          allLabel="Semua Stage"
-        />
-        <FilterSelect
-          label="Status Verifikasi"
-          placeholder="Pilih status verifikasi"
-          options={VERIFICATION_STATUS_OPTIONS}
-          value={progress}
-          onChange={onProgressChange}
-          allLabel="Semua Status"
-        />
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ const fetchReports = async ({
   provinceId,
   regencyId,
   stage,
-  progress,
+  verificationStatus: progress,
 } = {}) => {
   const params = { offset, limit };
   if (provinceId) params.provinceId = Number(provinceId);
@@ -15,6 +15,7 @@ const fetchReports = async ({
   if (stage) params.stage = stage;
   if (progress) params.status = progress;
 
+  console.log("Fetching reports with params:", params);
   try {
     const res = await http.get("/report", { params });
     const data = Array.isArray(res?.data?.data) ? res.data.data : [];
@@ -57,6 +58,6 @@ export const useGetReports = (params) =>
     queryKey: ["reports", params],
     queryFn: () => fetchReports(params),
     keepPreviousData: true,
-    cacheTime: 5 * 60 * 1000,
+    // cacheTime: 5 * 60 * 1000,
     staleTime: 30_000,
   });

@@ -9,13 +9,11 @@ const ReportPage = () => {
 
   const [draftProvinceId, setDraftProvinceId] = useState("");
   const [draftRegencyId, setDraftRegencyId] = useState("");
-  const [draftStage, setDraftStage] = useState("");
-  const [draftProgress, setDraftProgress] = useState("");
 
   const [appliedProvinceId, setAppliedProvinceId] = useState("");
   const [appliedRegencyId, setAppliedRegencyId] = useState("");
-  const [appliedStage, setAppliedStage] = useState("");
-  const [appliedProgress, setAppliedProgress] = useState("");
+  const [appliedVerificationStatus, setAppliedVerificationStatus] =
+    useState("");
 
   const LIMIT = 10;
 
@@ -25,41 +23,37 @@ const ReportPage = () => {
       limit: LIMIT,
       provinceId: appliedProvinceId || undefined,
       regencyId: appliedRegencyId || undefined,
-      stage: appliedStage || undefined,
-      progress: appliedProgress || undefined,
+      verificationStatus: appliedVerificationStatus || undefined,
     }),
     [
       page,
       LIMIT,
       appliedProvinceId,
       appliedRegencyId,
-      appliedStage,
-      appliedProgress,
+      appliedVerificationStatus,
     ],
   );
 
+  console.log("Query Params:", queryParams);
+
   const { data, isLoading, isError, error, isFetching } =
     useGetReports(queryParams);
+
   const reports = data?.data ?? [];
   const meta = data?.meta ?? { page, limit: LIMIT, total: 0, totalPages: 1 };
 
   const handleApplyFilter = () => {
     setAppliedProvinceId(draftProvinceId || "");
     setAppliedRegencyId(draftRegencyId || "");
-    setAppliedStage(draftStage || "");
-    setAppliedProgress(draftProgress || "");
     setPage(1);
   };
 
   const handleResetFilter = () => {
     setDraftProvinceId("");
     setDraftRegencyId("");
-    setDraftStage("");
-    setDraftProgress("");
     setAppliedProvinceId("");
     setAppliedRegencyId("");
-    setAppliedStage("");
-    setAppliedProgress("");
+    setAppliedVerificationStatus("");
     setPage(1);
   };
 
@@ -73,10 +67,6 @@ const ReportPage = () => {
           setDraftRegencyId("");
         }}
         onRegencyChange={setDraftRegencyId}
-        stage={draftStage}
-        progress={draftProgress}
-        onStageChange={setDraftStage}
-        onProgressChange={setDraftProgress}
         onApply={handleApplyFilter}
         onReset={handleResetFilter}
       />
@@ -87,6 +77,11 @@ const ReportPage = () => {
         isError={isError}
         errorMessage={error?.message}
         emptyMessage={data?.message || "Tidak ada laporan ditemukan"}
+        verificationStatus={appliedVerificationStatus}
+        onVerificationStatusChange={(val) => {
+          setAppliedVerificationStatus(val || "");
+          setPage(1);
+        }}
       />
 
       <ReportPagination
