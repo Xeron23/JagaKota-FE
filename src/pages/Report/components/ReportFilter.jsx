@@ -1,13 +1,6 @@
 import React from "react";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
 import { Button } from "@/components/ui/button";
-import FilterSelect from "@/components/FilterSelect";
-
-// const STAGE_OPTIONS = [
-//   { label: "Review", value: "REVIEW" },
-//   { label: "In Progress", value: "INPROGRESS" },
-//   { label: "Completed", value: "COMPLETED" },
-// ];
 
 const ReportFilter = ({
   provinceId,

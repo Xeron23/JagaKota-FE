@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import http from "../lib/axios";
 
 const fetchReports = async ({
-  offset = 1,
+  page = 1,
   limit = 10,
   provinceId,
   regencyId,
   stage,
   verificationStatus: progress,
 } = {}) => {
-  const params = { offset, limit };
+  const params = { page, limit };
   if (provinceId) params.provinceId = Number(provinceId);
   if (regencyId) params.regencyId = Number(regencyId);
   if (stage) params.stage = stage;
@@ -20,7 +20,7 @@ const fetchReports = async ({
     const res = await http.get("/report", { params });
     const data = Array.isArray(res?.data?.data) ? res.data.data : [];
     const meta = res?.data?.meta ?? {
-      page: Number(offset) || 1,
+      page: Number(page) || 1,
       limit: Number(limit) || 10,
       total: data.length,
       totalPages: data.length
@@ -39,7 +39,7 @@ const fetchReports = async ({
       return {
         data: [],
         meta: {
-          page: Number(offset) || 1,
+          page: Number(page) || 1,
           limit: Number(limit) || 10,
           total: 0,
           totalPages: 0,
