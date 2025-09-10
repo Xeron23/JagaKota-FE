@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Input from "../components/Input.jsx";
 import {
   getAllProvince,
@@ -27,6 +27,9 @@ const UploadForm = () => {
   // Status tombol: idle | loading | success
   const [submitStatus, setSubmitStatus] = useState("idle");
 
+  // Ref untuk reset input file
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     getProvince();
     if (navigator.geolocation) {
@@ -39,13 +42,25 @@ const UploadForm = () => {
   }, []);
 
   const getProvince = async () => {
-    const province = await getAllProvince();
-    setProvince(province);
+    try {
+      const prov = await getAllProvince();
+      setProvince(prov || []);
+    } catch (e) {
+      console.error("Gagal memuat provinsi", e);
+    }
   };
 
   const getRegency = async (id) => {
-    const regency = await getRegencyById(id);
-    setRegency(regency);
+    try {
+      if (!id) {
+        setRegency([]);
+        return;
+      }
+      const reg = await getRegencyById(id);
+      setRegency(reg || []);
+    } catch (e) {
+      console.error("Gagal memuat kota/kabupaten", e);
+    }
   };
 
   const getPosition = (position) => {
@@ -61,7 +76,9 @@ const UploadForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const parsedValue =
-      name === "province" || name === "regency" ? parseInt(value) : value;
+      name === "province" || name === "regency"
+        ? parseInt(value || 0) || ""
+        : value;
     setFormData((prev) => ({
       ...prev,
       [name]: parsedValue,
@@ -69,73 +86,60 @@ const UploadForm = () => {
   };
 
   const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0] || null;
+
+    // cleanup preview sebelumnya
+    if (preview) URL.revokeObjectURL(preview);
+
     setFormData((prev) => ({
       ...prev,
       photo: file,
     }));
+
     if (file) {
       setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      street: "",
+      province: "",
+      latitude: "",
+      longitude: "",
+      regency: "",
+      photo: null,
+    });
+    setPreview(null);
+    setRegency([]);
+    setErrorMessage({});
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitStatus("loading");
 
-    setSubmitStatus("loading"); // mulai loading
-
-    const form = new FormData();
-
-    form.append("title", formData.title);
-    form.append("description", formData.description);
-    form.append("latitude", formData.latitude);
-    form.append("longitude", formData.longitude);
-    form.append("street", formData.street);
-    form.append("provinceId", formData.province);
-    form.append("regencyId", formData.regency);
-    form.append("photo", formData.photo);
-    console.log(form);
+    // Validasi dulu
+    const dataToValidate = {
+      title: formData.title,
+      description: formData.description,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      street: formData.street,
+      provinceId: formData.province,
+      regencyId: formData.regency,
+    };
 
     try {
-      const data = {
-        title: formData.title,
-        description: formData.description,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        street: formData.street,
-        provinceId: formData.province,
-        regencyId: formData.regency,
-      };
-
-      await reportSchema.validate(data, { abortEarly: false });
+      await reportSchema.validate(dataToValidate, { abortEarly: false });
       setErrorMessage({});
-      const token = JSON.parse(localStorage.getItem("user")).token;
-
-      const response = await uploadLaporan(form, token);
-      console.log("response: ", response);
-
-      if (response) {
-        setSubmitStatus("success"); // tampilkan status berhasil
-        setTimeout(() => setSubmitStatus("idle"), 2000); // kembali normal setelah 2 detik
-        formData.title = "";
-        formData.description = "";
-        formData.street = "";
-        formData.province = "";
-        formData.regency = "";
-        formData.photo = null;
-        formData.latitude = "";
-        formData.longitude = "";
-        setPreview(null);
-
-        // Reset input file HTML
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-
-        return;
-      }
     } catch (err) {
-      setSubmitStatus("idle"); // kembali normal jika error
+      setSubmitStatus("idle");
       if (err.inner) {
         const errorObj = {};
         err.inner.forEach((e) => {
@@ -143,12 +147,43 @@ const UploadForm = () => {
         });
         setErrorMessage(errorObj);
       }
+      return;
+    }
+
+    // Siapkan FormData setelah validasi
+    const form = new FormData();
+    form.append("title", formData.title);
+    form.append("description", formData.description);
+    form.append("latitude", formData.latitude);
+    form.append("longitude", formData.longitude);
+    form.append("street", formData.street);
+    form.append("provinceId", formData.province);
+    form.append("regencyId", formData.regency);
+    if (formData.photo) form.append("photo", formData.photo);
+
+    try {
+      const token = JSON.parse(localStorage.getItem("user") || "{}")?.token;
+      if (!token) {
+        throw new Error("Token tidak ditemukan. Silakan login kembali.");
+      }
+
+      const response = await uploadLaporan(form, token);
+      if (response) {
+        setSubmitStatus("success");
+        resetForm();
+        setTimeout(() => setSubmitStatus("idle"), 1500);
+      } else {
+        setSubmitStatus("idle");
+      }
+    } catch (err) {
+      console.error("Gagal mengunggah laporan:", err);
+      setSubmitStatus("idle");
     }
   };
 
   return (
     <div
-      className="min-h-screen flex flex-col text-black"
+      className="flex min-h-screen flex-col text-black"
       style={{
         backgroundImage:
           "url('/images/laporan.png'), linear-gradient(#F7EEDF, #F7EEDF)",
@@ -159,13 +194,13 @@ const UploadForm = () => {
     >
       <NavBar />
 
-      <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
-        <h2 className="text-2xl font-bold mb-6 text-center">
+      <div className="mx-auto mt-10 max-w-4xl rounded-xl bg-white p-6 shadow-md">
+        <h2 className="mb-6 text-center text-2xl font-bold">
           Upload Data Lokasi
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Kiri: Input */}
             <div className="space-y-4">
               <Input
@@ -205,7 +240,7 @@ const UploadForm = () => {
               <div className="flex flex-col">
                 <label
                   htmlFor="province"
-                  className="text-gray-700 font-medium mb-1"
+                  className="mb-1 font-medium text-gray-700"
                 >
                   Provinsi
                 </label>
@@ -215,9 +250,12 @@ const UploadForm = () => {
                   value={formData.province}
                   onChange={(e) => {
                     handleChange(e);
-                    getRegency(e.target.value);
+                    const val = e.target.value;
+                    getRegency(val);
+                    // reset pilihan regency saat ganti provinsi
+                    setFormData((prev) => ({ ...prev, regency: "" }));
                   }}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   <option value="">-- Pilih Provinsi --</option>
                   {province.map((prov) => (
@@ -227,7 +265,7 @@ const UploadForm = () => {
                   ))}
                 </select>
                 {errorMessage.province && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errorMessage.province}
                   </p>
                 )}
@@ -237,7 +275,7 @@ const UploadForm = () => {
               <div className="flex flex-col">
                 <label
                   htmlFor="regency"
-                  className="text-gray-700 font-medium mb-1"
+                  className="mb-1 font-medium text-gray-700"
                 >
                   Kota/Kabupaten
                 </label>
@@ -246,7 +284,7 @@ const UploadForm = () => {
                   name="regency"
                   value={formData.regency}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   <option value="">-- Pilih Kota/Kabupaten --</option>
                   {regency.map((reg) => (
@@ -256,7 +294,7 @@ const UploadForm = () => {
                   ))}
                 </select>
                 {errorMessage.regency && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errorMessage.regency}
                   </p>
                 )}
@@ -264,8 +302,8 @@ const UploadForm = () => {
             </div>
 
             {/* Kanan: Preview Gambar */}
-            <div className="flex flex-col items-center border rounded-lg p-4 bg-gray-50">
-              <div className="flex items-center justify-center w-full min-h-[250px]">
+            <div className="flex flex-col items-center rounded-lg border bg-gray-50 p-4">
+              <div className="flex min-h-[250px] w-full items-center justify-center">
                 {preview ? (
                   <img
                     src={preview}
@@ -279,17 +317,18 @@ const UploadForm = () => {
               <div className="mt-4 w-full">
                 <label
                   htmlFor="photo"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="mb-1 block text-sm font-medium text-gray-700"
                 >
                   Foto Lokasi *
                 </label>
                 <input
+                  ref={fileInputRef}
                   type="file"
                   id="photo"
                   name="photo"
                   accept="image/*"
                   onChange={handlePhotoChange}
-                  className="mt-1 block w-full text-sm file:py-3 file:px-6 file:border file:rounded file:bg-gray-100"
+                  className="mt-1 block w-full text-sm file:rounded file:border file:bg-gray-100 file:px-6 file:py-3"
                 />
               </div>
             </div>
@@ -297,7 +336,7 @@ const UploadForm = () => {
 
           {/* Checklist */}
           <div className="flex justify-center">
-            <label className="flex items-start gap-2 max-w-2xl text-center">
+            <label className="flex max-w-2xl items-start gap-2 text-center">
               <input type="checkbox" className="mt-1" />
               <span>
                 Dengan ini saya siap mempertanggungjawabkan laporan yang saya
@@ -312,12 +351,12 @@ const UploadForm = () => {
             <button
               type="submit"
               disabled={submitStatus === "loading"}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+              className="flex items-center gap-2 rounded-md bg-blue-600 px-6 py-2 text-white transition-colors duration-200 hover:bg-blue-700"
             >
               {submitStatus === "loading" && (
                 <>
                   Memproses
-                  <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                 </>
               )}
               {submitStatus === "success" && (

@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const NavbarMenu = [
   { name: "Beranda", href: "#beranda" },
   { name: "Cari Laporan", href: "laporan" },
-  { name: "Buat Laporan", href: "laporan" },
+  { name: "Buat Laporan", href: "laporan/upload" },
 ];
 
 const Navbar = () => {

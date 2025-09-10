@@ -9,6 +9,7 @@ import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import ReportPage from "./pages/Report/index.jsx";
+import UploadReportPage from "./pages/UploadReport/index.jsx";
 
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
@@ -36,6 +37,7 @@ function App() {
         },
       ],
     },
+
     {
       path: "/register",
       element: <Register />,
@@ -54,6 +56,11 @@ function App() {
               <Dashboard />
             </Suspense>
           ),
+        },
+        {
+          path: "/laporan/upload",
+          element: <PublicLayout />,
+          children: [{ index: true, element: <UploadReportPage /> }],
         },
       ],
     },

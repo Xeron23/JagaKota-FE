@@ -12,7 +12,7 @@ const themeClasses = {
   light: {
     label: "text-gray-700",
     trigger:
-      "h-[50px] w-full rounded-md border border-gray-300 bg-white text-gray-900 placeholder:text-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500",
+      "h-[50px] w-full rounded-md border border-gray-300 bg-white text-gray-900 placeholder:text-gray-500 focus:border-black-500 focus:ring-2 focus:ring-black",
     content:
       "max-h-64 overflow-auto border border-gray-200 bg-white text-gray-900 shadow-lg backdrop-blur-md",
     item: "cursor-pointer focus:bg-gray-100 data-[highlighted]:bg-gray-100",

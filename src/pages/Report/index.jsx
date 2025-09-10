@@ -47,7 +47,9 @@ const ReportPage = () => {
       (r) =>
         r.title?.toLowerCase().includes(q) ||
         r.description?.toLowerCase().includes(q) ||
-        r.location?.toLowerCase().includes(q),
+        r.address?.street?.toLowerCase().includes(q) ||
+        r.address?.regency?.name?.toLowerCase().includes(q) ||
+        r.address?.province?.name?.toLowerCase().includes(q),
     );
   }, [data, searchQuery]);
 

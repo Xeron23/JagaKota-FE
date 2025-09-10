@@ -12,11 +12,10 @@ const ReportFilter = ({
 }) => {
   return (
     <div>
-      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-800">Semua Laporan</h1>
+      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 shadow-sm hover:shadow-md transition-shadow">
+        <h1 className="text-2xl font-semibold text-slate-800">Cari Laporan</h1>
         <p className="mt-1 text-slate-600">
-          Cari laporan berdasarkan provinsi, kabupaten/kota, stage (progress),
-          dan status verifikasi.
+          Cari laporan berdasarkan provinsi dan kabupaten/kota
         </p>
 
         <div className="mt-5 space-y-4">
