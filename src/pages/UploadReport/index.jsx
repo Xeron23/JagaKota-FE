@@ -9,6 +9,7 @@ import React, {
 import { usePostReport } from "@/hooks/usePostReport";
 import ReportForm from "./components/ReportForm";
 import LocationPicker from "./components/LocationPicker";
+import toast from "react-hot-toast";
 
 const INITIAL_FORM = {
   title: "",
@@ -27,9 +28,11 @@ const UploadReportPage = () => {
   const [preview, setPreview] = useState(null);
   const fileRef = useRef(null);
 
+  // Fungsi Kirim Laporan
   const { mutate, isPending, isSuccess, isError, error, reset } =
     usePostReport();
 
+  // Preview Foto
   useEffect(() => {
     if (!form.photo) {
       setPreview(null);
@@ -40,6 +43,17 @@ const UploadReportPage = () => {
     return () => URL.revokeObjectURL(url);
   }, [form.photo]);
 
+  // Notifikasi Sukses
+  React.useEffect(() => {
+    if (isSuccess) {
+      toast.success("Report uploaded successfully! 🎉", {
+        duration: 4000,
+        position: "top-center",
+      });
+    }
+  }, [isSuccess]);
+
+  // Validasi Latitude & Longitude
   const { latValid, lngValid } = useMemo(() => {
     const lat = parseFloat(form.latitude);
     const lng = parseFloat(form.longitude);
@@ -49,6 +63,7 @@ const UploadReportPage = () => {
     };
   }, [form.latitude, form.longitude]);
 
+  // Cek apakah form bisa disubmit
   const canSubmit = useMemo(
     () =>
       !!(
@@ -64,11 +79,13 @@ const UploadReportPage = () => {
     [form, latValid, lngValid],
   );
 
+  // Validasi Error dari server
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
   }, []);
 
+  // Handle Perubahan Lokasi dari peta
   const handleLocationChange = useCallback(({ lat, lng }) => {
     setForm((f) => ({
       ...f,
@@ -77,6 +94,7 @@ const UploadReportPage = () => {
     }));
   }, []);
 
+  // Handle perubahan Provinsi
   const handleProvinceChange = useCallback((provinceId) => {
     setForm((f) => ({
       ...f,
@@ -85,6 +103,7 @@ const UploadReportPage = () => {
     }));
   }, []);
 
+  // Handle perubahan Kabupaten
   const handleRegencyChange = useCallback((regencyId) => {
     setForm((f) => ({
       ...f,
@@ -92,11 +111,13 @@ const UploadReportPage = () => {
     }));
   }, []);
 
+  // Handle perubahan Foto
   const handlePhotoChange = useCallback((e) => {
     const file = e.target.files?.[0] || null;
     setForm((f) => ({ ...f, photo: file }));
   }, []);
 
+  // Reset form
   const handleReset = useCallback(() => {
     setForm(INITIAL_FORM);
     setProgress(0);
@@ -104,6 +125,7 @@ const UploadReportPage = () => {
     reset();
   }, [reset]);
 
+  // Handle Submit
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
