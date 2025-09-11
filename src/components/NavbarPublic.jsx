@@ -118,7 +118,7 @@ const Navbar = () => {
               <a
                 key={item.href}
                 href={`/${item.href}`}
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                className="rounded-3xl px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-gray-200 hover:text-gray-900 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
               >
                 {item.name}
               </a>

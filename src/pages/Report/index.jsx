@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useGetReports } from "@/hooks/useGetReports";
 import ReportFilter from "./components/ReportFilter";
 import ReportPagination from "./components/ReportPagination";
 import ReportGrid from "./components/ReportGrid";
+import { useLocation } from "react-router-dom";
 
 const ReportPage = () => {
+  const location = useLocation();
   const [page, setPage] = useState(1); // page mulai dari 1
 
   const [draftProvinceId, setDraftProvinceId] = useState("");
@@ -18,6 +20,21 @@ const ReportPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const LIMIT = 8;
+
+  useEffect(() => {
+    if (location.state?.provinceId && location.state?.regencyId) {
+      const { provinceId, regencyId } = location.state;
+      console.log(provinceId, regencyId);
+      setDraftProvinceId(provinceId);
+      setDraftRegencyId(regencyId);
+      setAppliedProvinceId(provinceId);
+      setAppliedRegencyId(regencyId);
+      setPage(1);
+
+      // // Clear the navigation state to prevent re-applying on refresh
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [location.state]);
 
   const queryParams = useMemo(
     () => ({
