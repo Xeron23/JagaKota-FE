@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ButtonSubmit from "../../components/Button.jsx";
-import Input from "../../components/Input.jsx";
-import Alert from "../../components/Alert.jsx";
+import ButtonSubmit from "@/components/Button.jsx";
+import Input from "@/components/Input.jsx";
+import Alert from "@/components/Alert.jsx";
 
-import { useAuth } from "../../context/Auth.jsx";
+import { useAuth } from "@/context/Auth.jsx";
 
 function Login() {
   const [formData, setFormData] = useState({
