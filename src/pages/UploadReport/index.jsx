@@ -1,4 +1,3 @@
-// ...existing code...
 import React, {
   useState,
   useRef,
@@ -8,8 +7,7 @@ import React, {
 } from "react";
 import { usePostReport } from "@/hooks/usePostReport";
 import ReportForm from "./components/ReportForm";
-import LocationPicker from "./components/LocationPicker";
-import toast from "react-hot-toast";
+import LocationPicker from "@/components/LocationPicker";
 
 const INITIAL_FORM = {
   title: "",
@@ -42,16 +40,6 @@ const UploadReportPage = () => {
     setPreview(url);
     return () => URL.revokeObjectURL(url);
   }, [form.photo]);
-
-  // Notifikasi Sukses
-  React.useEffect(() => {
-    if (isSuccess) {
-      toast.success("Report uploaded successfully! 🎉", {
-        duration: 4000,
-        position: "top-center",
-      });
-    }
-  }, [isSuccess]);
 
   // Validasi Latitude & Longitude
   const { latValid, lngValid } = useMemo(() => {
@@ -131,7 +119,7 @@ const UploadReportPage = () => {
       e.preventDefault();
       if (!canSubmit || isPending) return;
 
-      reset();
+      // reset();
       setProgress(0);
 
       mutate(
@@ -147,7 +135,10 @@ const UploadReportPage = () => {
         {
           onSuccess: () => {
             setProgress(100);
-            handleReset();
+            setTimeout(() => {
+              handleReset();
+              reset();
+            }, 700);
           },
           onError: () => setProgress(0),
         },
@@ -194,4 +185,3 @@ const UploadReportPage = () => {
 };
 
 export default UploadReportPage;
-// ...existing code...

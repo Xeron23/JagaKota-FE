@@ -1,8 +1,9 @@
-import React from "react";
+import { useEffect } from "react";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Alert from "@/components/Alert";
+import toast from "react-hot-toast";
 
 const ReportForm = ({
   form,
@@ -24,8 +25,28 @@ const ReportForm = ({
     typeof error === "object" && error !== null && !(error instanceof Error)
       ? error
       : {};
-  console.log(fieldErrors.street);
   const generalError = error instanceof Error ? error.message : null;
+
+  useEffect(() => {
+  }, [isSuccess, isPending, error]);
+
+  // Success handling dengan toast
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Report uploaded successfully! 🎉", {
+        duration: 4000,
+      });
+    }
+  }, [isSuccess]);
+
+  // Error handling dengan toast
+  useEffect(() => {
+    if (generalError) {
+      toast.error("Gagal untuk mengunggah laporan, silakan coba lagi", {
+        duration: 4000,
+      });
+    }
+  }, [generalError]);
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
@@ -56,7 +77,6 @@ const ReportForm = ({
               ? "border-red-500 focus-visible:ring-red-500"
               : "border-input focus-visible:ring-ring"
           }`}
-          aria-invalid={!!fieldErrors.description}
         />
         {fieldErrors.description && (
           <p className="text-sm text-red-600" role="alert">
@@ -160,9 +180,6 @@ const ReportForm = ({
       </div>
 
       {/* Feedback Messages */}
-      {isSuccess && (
-        <p className="text-sm text-green-600">Report submitted successfully.</p>
-      )}
       {generalError && <Alert message={generalError} type="danger" />}
     </form>
   );

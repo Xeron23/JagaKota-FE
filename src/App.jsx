@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
 // import { useAuth } from "./context/Auth.jsx";
 import Register from "./pages/auth/register.jsx";
@@ -71,9 +72,37 @@ function App() {
   ]);
 
   return (
-    <Suspense fallback={<Spinner />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <>
+      <Suspense fallback={<Spinner />}>
+        <RouterProvider router={router} />
+      </Suspense>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+            borderRadius: "8px",
+            padding: "16px",
+          },
+          success: {
+            style: {
+              background: "#10b981",
+              color: "#fff",
+            },
+          },
+          error: {
+            style: {
+              background: "#ef4444",
+              color: "#fff",
+            },
+          },
+        }}
+      />
+    </>
   );
 }
 
