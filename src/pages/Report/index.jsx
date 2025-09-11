@@ -5,7 +5,7 @@ import ReportPagination from "./components/ReportPagination";
 import ReportGrid from "./components/ReportGrid";
 
 const ReportPage = () => {
-  const [page, setPage] = useState(1); // offset
+  const [page, setPage] = useState(1); // page mulai dari 1
 
   const [draftProvinceId, setDraftProvinceId] = useState("");
   const [draftRegencyId, setDraftRegencyId] = useState("");
@@ -15,11 +15,13 @@ const ReportPage = () => {
   const [appliedVerificationStatus, setAppliedVerificationStatus] =
     useState("");
 
-  const LIMIT = 10;
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const LIMIT = 8;
 
   const queryParams = useMemo(
     () => ({
-      offset: page,
+      page: page,
       limit: LIMIT,
       provinceId: appliedProvinceId || undefined,
       regencyId: appliedRegencyId || undefined,
@@ -34,12 +36,23 @@ const ReportPage = () => {
     ],
   );
 
-  console.log("Query Params:", queryParams);
-
   const { data, isLoading, isError, error, isFetching } =
     useGetReports(queryParams);
 
-  const reports = data?.data ?? [];
+  const reports = useMemo(() => {
+    const raw = data?.data ?? [];
+    if (!searchQuery.trim()) return raw;
+    const q = searchQuery.trim().toLowerCase();
+    return raw.filter(
+      (r) =>
+        r.title?.toLowerCase().includes(q) ||
+        r.description?.toLowerCase().includes(q) ||
+        r.address?.street?.toLowerCase().includes(q) ||
+        r.address?.regency?.name?.toLowerCase().includes(q) ||
+        r.address?.province?.name?.toLowerCase().includes(q),
+    );
+  }, [data, searchQuery]);
+
   const meta = data?.meta ?? { page, limit: LIMIT, total: 0, totalPages: 1 };
 
   const handleApplyFilter = () => {
@@ -54,6 +67,7 @@ const ReportPage = () => {
     setAppliedProvinceId("");
     setAppliedRegencyId("");
     setAppliedVerificationStatus("");
+    setSearchQuery("");
     setPage(1);
   };
 
@@ -76,12 +90,14 @@ const ReportPage = () => {
         isLoading={isLoading}
         isError={isError}
         errorMessage={error?.message}
-        emptyMessage={data?.message || "Tidak ada laporan ditemukan"}
+        emptyMessage={"Tidak ada laporan ditemukan"}
         verificationStatus={appliedVerificationStatus}
         onVerificationStatusChange={(val) => {
           setAppliedVerificationStatus(val || "");
           setPage(1);
         }}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
       />
 
       <ReportPagination

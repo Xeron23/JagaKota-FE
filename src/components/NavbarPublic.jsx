@@ -16,7 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NavbarMenu = [
   { name: "Beranda", href: "#beranda" },
-  { name: "Laporan", href: "laporan" },
+  { name: "Cari Laporan", href: "laporan" },
+  { name: "Buat Laporan", href: "laporan/upload" },
 ];
 
 const Navbar = () => {
@@ -64,13 +65,12 @@ const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>
-                <div className="text-xs text-gray-500">Signed in as</div>
-                <div className="truncate font-medium">{user?.username}</div>
+                <div className="mb-2 text-xs text-gray-500">
+                  Kamu Login Sebagai
+                </div>
+                <div className="truncate font-medium">@{user?.username}</div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/profile">Profile</Link>
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleLogout}

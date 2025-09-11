@@ -11,6 +11,9 @@ export const Login = async (identifier, password) => {
     });
     return userLogin.data.data;
   } catch (error) {
+    if (error.response?.data?.errors) {
+      throw error.response.data.errors;
+    }
     throw new Error(error.response?.data?.message || "Login gagal");
   }
 };
@@ -32,9 +35,10 @@ export const Register = async (formData) => {
     const response = await http.post(`${api}/user/register`, submissionData);
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Pendaftaran gagal, terjadi kesalahan.",
-    );
+    if (error.response?.data?.errors) {
+      throw error.response.data.errors;
+    }
+    throw new Error(error.response?.data?.message || "Login gagal");
   }
 };
 

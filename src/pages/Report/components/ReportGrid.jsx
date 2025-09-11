@@ -1,6 +1,8 @@
 import React from "react";
 import ReportCard from "@/components/ReportCard";
 import FilterSelect from "@/components/FilterSelect";
+import SearchBar from "@/components/SearchBar";
+
 
 const VERIFICATION_STATUS_OPTIONS = [
   { label: "Pending", value: "PENDING" },
@@ -16,14 +18,17 @@ const ReportGrid = ({
   emptyMessage = "Tidak ada laporan ditemukan.",
   verificationStatus = "",
   onVerificationStatusChange,
+  searchQuery = "",
+  onSearchQueryChange,
+  searchDelay = 400,
 }) => {
   return (
     <div className="w-full">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-800">Daftar Laporan</h2>
+      <div className="mb-4 flex items-center justify-between gap-4">
+
+        {/* Filter */}
         <div className="w-56">
           <FilterSelect
-            label="Status Verifikasi"
             placeholder="Pilih status verifikasi"
             options={VERIFICATION_STATUS_OPTIONS}
             value={verificationStatus}
@@ -31,9 +36,19 @@ const ReportGrid = ({
             allLabel="Semua Status"
           />
         </div>
+
+        {/* Search Bar */}
+        <SearchBar
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          delay={searchDelay}
+          placeholder="Cari judul, deskripsi, atau lokasi"
+          ariaLabel="Cari laporan"
+          className="w-96 self-end"
+        />
       </div>
 
-      {/* Content */}
+      {/* List Laporan */}
       {isError ? (
         <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {errorMessage || "Gagal memuat laporan"}
@@ -52,7 +67,7 @@ const ReportGrid = ({
           {emptyMessage}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {reports.map((r) => (
             <ReportCard key={r.report_id} report={r} />
           ))}
