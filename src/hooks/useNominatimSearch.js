@@ -8,7 +8,7 @@ export const useNominatimSearch = (options = {}) => {
     minQueryLength = 3,
     limit = 6,
     countryCode = "id",
-    language = "id,en"
+    language = "id,en",
   } = options;
 
   const [query, setQuery] = useState("");

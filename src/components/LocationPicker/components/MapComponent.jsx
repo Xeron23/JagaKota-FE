@@ -15,7 +15,7 @@ const MapComponent = ({
   attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }) => {
   return (
-    <div className={`relative ${height} w-full`}>
+    <div className={`relative ${height} z-0 w-full`}>
       <MapContainer
         center={center}
         zoom={zoom}
