@@ -31,7 +31,6 @@ const ReportPage = () => {
       setAppliedRegencyId(regencyId);
       setPage(1);
 
-      // // Clear the navigation state to prevent re-applying on refresh
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [location.state]);

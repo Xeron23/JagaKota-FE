@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
-import { useAuth } from "@/context/Auth";
+import { useAuth } from "@/context/Auth.jsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
