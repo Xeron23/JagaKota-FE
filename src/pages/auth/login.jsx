@@ -25,8 +25,9 @@ function Login() {
       const { role } = result;
 
       if (role === "ADMIN") {
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else if (role === "USER") {
+        
         navigate("/");
       }
     }
