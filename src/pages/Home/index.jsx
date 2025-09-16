@@ -9,7 +9,7 @@ function HomePage() {
       <Jumbotron />
       <AboutUs />
       <ReportCarrousel />
-      <Faq/>
+      {/* <Faq/> */}
     </div>
   );
 }
