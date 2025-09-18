@@ -11,7 +11,6 @@ const ReportDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Use the custom hook to fetch report data
   const { data: report, isLoading: loading, error } = useGetReportById(id);
 
   if (loading) {
@@ -70,17 +69,17 @@ const ReportDetail = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Content */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Left Column - Images */}
+          {/* Images */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
+            <div className="sticky top-20">
               <ReportImages photoUrl={report.photoUrl} title={report.title} />
             </div>
           </div>
 
-          {/* Right Column - Details */}
+          {/*  Details */}
           <div className="space-y-6 lg:col-span-2">
             {/* Report Information */}
             <ReportInfo report={report} />
