@@ -8,6 +8,7 @@ import Login from "./pages/auth/login.jsx";
 import Spinner from "./components/Loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
+import ReportDetail from "./pages/ReportDetail/index.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import ReportPage from "./pages/Report/index.jsx";
 import UploadReportPage from "./pages/UploadReport/index.jsx";
@@ -42,6 +43,16 @@ function App() {
         },
       ],
     },
+    {
+      path: "/tes/:id",
+      element: <PublicLayout />,
+      children: [
+        {
+          index: true,
+          element: <ReportDetail />,
+        },
+      ],
+    },
 
     {
       path: "/register",
@@ -70,33 +81,33 @@ function App() {
       ],
     },
     {
-      element: <PrivateRoute/>,
+      element: <PrivateRoute />,
       children: [
         {
-          element: <AdminAccess/>,
+          element: <AdminAccess />,
           children: [
             {
               path: "/admin/dashboard",
               element: (
                 <Suspense fallback={<Spinner />}>
                   <AdminLayout>
-                    <DashboardAdmin/>
+                    <DashboardAdmin />
                   </AdminLayout>
                 </Suspense>
-              )
+              ),
             },
             {
               path: "/admin/reports",
               element: (
                 <Suspense fallback={<Spinner />}>
                   <AdminLayout>
-                    <Reports/>
+                    <Reports />
                   </AdminLayout>
                 </Suspense>
-              )
+              ),
             },
-          ]
-        }
+          ],
+        },
       ],
     },
     {

@@ -6,9 +6,9 @@ import Faq from "./components/Faq";
 function HomePage() {
   return (
     <div>
-      <Jumbotron />
       <AboutUs />
       <ReportCarrousel />
+      <Jumbotron />
       {/* <Faq/> */}
     </div>
   );
