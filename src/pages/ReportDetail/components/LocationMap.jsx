@@ -138,17 +138,6 @@ const LocationMap = ({ latitude, longitude, address }) => {
             </div>
           </div>
         </div>
-
-        {/* Address info */}
-        <div className="mt-3 text-sm text-gray-600">
-          <p className="font-medium text-gray-900">{address.street}</p>
-          <p>
-            {address.regency.name}, {address.province.name}
-          </p>
-          <p className="mt-1 text-xs">
-            Koordinat: {latitude.toFixed(6)}, {longitude.toFixed(6)}
-          </p>
-        </div>
       </div>
 
       {/* Map container */}
@@ -168,15 +157,6 @@ const LocationMap = ({ latitude, longitude, address }) => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Note */}
-      <div className="bg-gray-50 p-4 text-xs text-gray-600">
-        <p>
-          <strong>Catatan:</strong> Pastikan untuk mengaktifkan JavaScript dan
-          memiliki koneksi internet yang stabil untuk menampilkan peta dengan
-          benar.
-        </p>
       </div>
     </div>
   );

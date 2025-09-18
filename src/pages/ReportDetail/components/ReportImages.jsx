@@ -1,8 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Camera, ZoomIn, X } from "lucide-react";
 
 const ReportImages = ({ photoUrl, title }) => {
   const [showModal, setShowModal] = useState(false);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === "Escape") {
+        setShowModal(false);
+      }
+    };
+
+    if (showModal) {
+      document.addEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "unset";
+    };
+  }, [showModal]);
+
+  const handleModalClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowModal(false);
+    }
+  };
 
   if (!photoUrl) {
     return (
@@ -21,41 +46,43 @@ const ReportImages = ({ photoUrl, title }) => {
       {/* Main Image Display */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <div className="group relative">
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-20">
+            <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
           <img
             src={photoUrl}
             alt={title || "Foto Laporan"}
             className="h-80 w-full cursor-pointer object-cover transition-transform duration-300 group-hover:scale-105"
             onClick={() => setShowModal(true)}
+            loading="lazy"
           />
-
-          {/* Overlay with zoom icon */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-20">
-            <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          </div>
-        </div>
-
-        {/* Image Info */}
-        <div className="p-4">
-          <h3 className="font-medium text-gray-900">
-            {title || "Foto Laporan"}
-          </h3>
         </div>
       </div>
 
-      {/* Modal for enlarged image */}
+      {/* Enhanced Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
-          <div className="relative max-h-full max-w-full">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4 backdrop-blur-sm"
+          onClick={handleModalClick}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div className="relative flex max-h-[40vh] max-w-[40vw] items-center justify-center">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute -top-12 right-0 text-white hover:text-gray-300"
+              className="absolute left-2 -top-10 z-10 rounded-full bg-black bg-opacity-50 p-2 text-white transition-colors hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+              aria-label="Close modal"
             >
-              <X className="h-8 w-8" />
+              <X className="h-6 w-6" />
             </button>
+
+            {/* Modal Image */}
             <img
               src={photoUrl}
               alt={title || "Foto Laporan"}
-              className="max-h-screen max-w-full rounded-lg object-contain"
+              className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
+              id="modal-title"
             />
           </div>
         </div>
