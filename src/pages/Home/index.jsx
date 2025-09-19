@@ -11,7 +11,7 @@ function HomePage() {
       <Statistic />
       <ReportCarrousel />
       {/* <AboutUs /> */}
-      <Faq />
+      {/* <Faq /> */}
     </div>
   );
 }
