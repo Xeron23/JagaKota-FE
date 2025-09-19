@@ -8,12 +8,19 @@ const fetchReports = async ({
   regencyId,
   stage,
   verificationStatus: progress,
+  like,
+  weekly,
+  latest
 } = {}) => {
   const params = { page, limit };
   if (provinceId) params.provinceId = Number(provinceId);
   if (regencyId) params.regencyId = Number(regencyId);
   if (stage) params.stage = stage;
   if (progress) params.status = progress;
+  if(like) params.like = like;
+  if(weekly) params.weekly = weekly;
+  if(latest) params.latest = latest;
+
 
   console.log("Fetching reports with params:", params);
   try {

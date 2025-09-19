@@ -8,9 +8,14 @@ import Login from "./pages/Auth/Login";
 import Spinner from "./components/Loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
+import ReportDetail from "./pages/ReportDetail/index.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import ReportPage from "./pages/Report/index.jsx";
 import UploadReportPage from "./pages/UploadReport/index.jsx";
+import AdminAccess from "./utils/AdminRouteAccess.jsx";
+import Reports from "./pages/admin/Report.jsx";
+import DashboardAdmin from "./pages/admin/Dashboard.jsx";
+import AdminLayout from "./layouts/AdminLayout.jsx";
 
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
@@ -38,6 +43,16 @@ function App() {
         },
       ],
     },
+    {
+      path: "/laporan/:id",
+      element: <PublicLayout />,
+      children: [
+        {
+          index: true,
+          element: <ReportDetail />,
+        },
+      ],
+    },
 
     {
       path: "/register",
@@ -62,6 +77,36 @@ function App() {
           path: "/laporan/upload",
           element: <PublicLayout />,
           children: [{ index: true, element: <UploadReportPage /> }],
+        },
+      ],
+    },
+    {
+      element: <PrivateRoute />,
+      children: [
+        {
+          element: <AdminAccess />,
+          children: [
+            {
+              path: "/admin/dashboard",
+              element: (
+                <Suspense fallback={<Spinner />}>
+                  <AdminLayout>
+                    <DashboardAdmin />
+                  </AdminLayout>
+                </Suspense>
+              ),
+            },
+            {
+              path: "/admin/reports",
+              element: (
+                <Suspense fallback={<Spinner />}>
+                  <AdminLayout>
+                    <Reports />
+                  </AdminLayout>
+                </Suspense>
+              ),
+            },
+          ],
         },
       ],
     },

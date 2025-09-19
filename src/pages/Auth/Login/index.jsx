@@ -28,8 +28,9 @@ function Login() {
       toast.success("Login berhasil! Selamat datang kembali.");
 
       if (role === "ADMIN") {
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else if (role === "USER") {
+        
         navigate("/");
       }
     }

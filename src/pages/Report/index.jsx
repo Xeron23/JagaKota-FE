@@ -132,4 +132,5 @@ const ReportPage = () => {
     </div>
   );
 };
+
 export default ReportPage;

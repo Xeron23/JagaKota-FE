@@ -11,7 +11,7 @@ export default function AdminAccess() {
   if (isChecking) return <Spinner />;
 
   return !isAuth || user.role !== "ADMIN" ? (
-    <Navigate to="/dashboard" />
+    <Navigate to="/" />
   ) : (
     <Outlet />
   );
