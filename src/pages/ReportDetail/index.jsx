@@ -52,36 +52,19 @@ const ReportDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/laporan")}
-                className="flex items-center text-gray-600 transition-colors duration-200 hover:text-gray-900"
-              >
-                <ArrowLeft className="mr-2 h-5 w-5" />
-                Kembali
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Content */}
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Images */}
           <div className="lg:col-span-1">
-            <div className="sticky top-20">
+            <div className="sticky top-20 z-20">
               <ReportImages photoUrl={report.photoUrl} title={report.title} />
             </div>
           </div>
 
-          {/*  Details */}
-          <div className="space-y-6 lg:col-span-2">
-            {/* Report Information */}
+          {/* Details */}
+          <div className="relative z-10 space-y-6 lg:col-span-2">
+            {/* Informasi Laporan */}
             <ReportInfo report={report} />
 
             {/* Location Map */}

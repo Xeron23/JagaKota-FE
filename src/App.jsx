@@ -44,7 +44,7 @@ function App() {
       ],
     },
     {
-      path: "/tes/:id",
+      path: "/laporan/:id",
       element: <PublicLayout />,
       children: [
         {
