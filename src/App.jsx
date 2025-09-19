@@ -15,6 +15,8 @@ import AdminAccess from "./utils/AdminRouteAccess.jsx";
 import Reports from "./pages/admin/Report.jsx";
 import DashboardAdmin from "./pages/admin/Dashboard.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
+import ReportsProgress from "./pages/admin/ReportProgress.jsx";
+import { Profile } from "./pages/admin/Profile.jsx";
 
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
@@ -52,7 +54,7 @@ function App() {
       element: <Login />,
     },
     {
-      element: <PrivateRoute />,
+      element: <PrivateRoute allowedRoles={["USER"]} />,
       children: [
         {
           path: "/dashboard",
@@ -70,11 +72,8 @@ function App() {
       ],
     },
     {
-      element: <PrivateRoute/>,
+      element: <PrivateRoute allowedRoles={["ADMIN"]}/>,
       children: [
-        {
-          element: <AdminAccess/>,
-          children: [
             {
               path: "/admin/dashboard",
               element: (
@@ -95,9 +94,27 @@ function App() {
                 </Suspense>
               )
             },
+            {
+              path: "/admin/reports/progress",
+              element: (
+                <Suspense fallback={<Spinner/>}>
+                  <AdminLayout>
+                    <ReportsProgress/>
+                  </AdminLayout>
+                </Suspense>
+              )
+            },
+            {
+              path: "/admin/profile",
+              element: (
+                <Suspense fallback={<Spinner/>}>
+                  <AdminLayout>
+                    <Profile/>
+                  </AdminLayout>
+                </Suspense>
+              )
+            }
           ]
-        }
-      ],
     },
     {
       path: "*",
