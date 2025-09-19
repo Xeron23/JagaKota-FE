@@ -6,6 +6,7 @@ import ReportImages from "./components/ReportImages";
 import ReportInfo from "./components/ReportInfo";
 import ProgressUpdates from "./components/ProgressUpdates";
 import LocationMap from "./components/LocationMap";
+import Loader from "@/components/loader";
 
 const ReportDetail = () => {
   const { id } = useParams();
@@ -13,18 +14,11 @@ const ReportDetail = () => {
 
   const { data: report, isLoading: loading, error } = useGetReportById(id);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Memuat detail laporan...</p>
-        </div>
-      </div>
-    );
+  if (loading || !report) {
+    return <Loader onFinish={!loading} />;
   }
 
-  if (error || !report) {
+  if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -67,7 +61,7 @@ const ReportDetail = () => {
             {/* Informasi Laporan */}
             <ReportInfo report={report} />
 
-            {/* Location Map */}
+            {/* Maps */}
             <LocationMap
               latitude={report.address.latitude}
               longitude={report.address.longitude}
