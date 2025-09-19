@@ -18,7 +18,7 @@ export default function AboutUs() {
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.9),transparent)]" />
         <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
-
+      
       {/* Content */}
       <div className="mx-auto h-full w-full">
         <div className="mx-auto h-full w-full max-w-6xl">
