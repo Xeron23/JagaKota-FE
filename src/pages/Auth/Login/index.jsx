@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
-import ButtonSubmit from "../../components/Button.jsx";
-import Input from "../../components/Input.jsx";
-import Alert from "../../components/Alert.jsx";
+import ButtonSubmit from "@/components/Button.jsx";
+import Input from "@/components/Input.jsx";
+import Alert from "@/components/Alert.jsx";
 
-import { useAuth } from "../../context/Auth.jsx";
+import { useAuth } from "@/context/Auth.jsx";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,8 @@ function Login() {
 
     if (result.success) {
       const { role } = result;
+
+      toast.success("Login berhasil! Selamat datang kembali.");
 
       if (role === "ADMIN") {
         navigate("/admin/dashboard");

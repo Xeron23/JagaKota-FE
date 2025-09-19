@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
-import { useAuth } from "@/context/Auth";
+import { useAuth } from "@/context/Auth.jsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -118,7 +118,7 @@ const Navbar = () => {
               <a
                 key={item.href}
                 href={`/${item.href}`}
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                className="rounded-3xl px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-gray-200 hover:text-gray-900 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
               >
                 {item.name}
               </a>

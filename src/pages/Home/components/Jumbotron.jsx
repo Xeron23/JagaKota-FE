@@ -2,12 +2,23 @@
 import { Button } from "@/components/ui/button.jsx";
 import { useState } from "react";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Jumbotron() {
   const [province, setProvince] = useState("");
   const [regency, setRegency] = useState("");
+  const navigate = useNavigate();
 
   const canReport = province && regency;
+
+  const handleSearchReports = () => {
+    console.log({ province, regency });
+    if (canReport) {
+      navigate(`/laporan`, {
+        state: { provinceId: province, regencyId: regency },
+      });
+    }
+  };
 
   return (
     <section
@@ -23,7 +34,7 @@ export default function Jumbotron() {
         <div className="flex min-h-[80vh] items-center gap-12 py-12 text-center">
           <div className="mx-auto flex w-full max-w-6xl flex-col justify-center">
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
-              Mari kita cari laporan di sekitar wilayah yang kau tuju
+              Laporkan Kerusakan Infrastruktur di Daerah Anda
             </h1>
             <p className="mb-8 text-lg leading-relaxed text-gray-200">
               Bantu pemerintah memperbaiki jalan rusak, lampu jalan mati,
@@ -49,12 +60,7 @@ export default function Jumbotron() {
                 size="lg"
                 disabled={!canReport}
                 className="mt-6 flex h-[50px] w-full transition-transform disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={() =>
-                  console.log("Cari Laporan:", {
-                    provinceId: province,
-                    regencyId: regency,
-                  })
-                }
+                onClick={handleSearchReports}
               >
                 {canReport ? "Cari Laporan" : "Pilih Lokasi Dulu"}
               </Button>

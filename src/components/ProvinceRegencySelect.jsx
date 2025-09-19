@@ -1,5 +1,5 @@
-import { useGetProvinces } from "@/hooks/useGetProvinces.jsx";
-import { useGetRegencies } from "@/hooks/useGetRegencies.jsx";
+import { useGetProvinces } from "@/hooks/useGetProvinces.js";
+import { useGetRegencies } from "@/hooks/useGetRegencies.js";
 import {
   Select,
   SelectTrigger,

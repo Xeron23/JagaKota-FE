@@ -1,15 +1,17 @@
-import SearchReport from "./components/SearchReport";
-import AboutUs from "./components/AboutUs";
+import Jumbotron from "./components/Jumbotron";
 import ReportCarrousel from "./components/ReportCarrousel";
 import Faq from "./components/Faq";
+import Statistic from "./components/Statistic";
+// import AboutUs from "./components/AboutUs";
 
 function HomePage() {
   return (
     <div>
-      <AboutUs />
+      <Jumbotron />
+      <Statistic />
       <ReportCarrousel />
-      <SearchReport />
-      {/* <Faq/> */}
+      {/* <AboutUs /> */}
+      {/* <Faq /> */}
     </div>
   );
 }
