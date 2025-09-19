@@ -23,7 +23,7 @@ export default function Jumbotron() {
         <div className="flex min-h-[80vh] items-center gap-12 py-12 text-center">
           <div className="mx-auto flex w-full max-w-6xl flex-col justify-center">
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
-              Laporkan Kerusakan Infrastruktur di Daerah Anda
+              Mari kita cari laporan di sekitar wilayah yang kau tuju
             </h1>
             <p className="mb-8 text-lg leading-relaxed text-gray-200">
               Bantu pemerintah memperbaiki jalan rusak, lampu jalan mati,
