@@ -68,7 +68,7 @@ const LocationPicker = ({
   );
 
   return (
-    <div className="flex h-fit flex-col rounded-md border text-sm">
+    <div className="flex h-fit flex-col rounded-md border bg-white text-sm">
       <div className="flex items-center justify-between border-b p-4">
         <h2 className="font-medium">{title}</h2>
         {showMyLocationButton && (

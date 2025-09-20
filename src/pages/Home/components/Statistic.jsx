@@ -9,7 +9,7 @@ export default function Statistic() {
   return (
     <section
       id="about-us"
-      className="relative isolate flex h-[80vh] w-full items-center justify-center bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-20 text-black"
+      className="relative isolate flex h-[80vh] w-full items-center justify-center bg-gradient-to-b  px-6 py-20 text-black"
     >
       {/* Background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">

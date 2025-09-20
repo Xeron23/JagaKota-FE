@@ -47,7 +47,7 @@ export default function ReportCarrousel() {
       className="relative isolate flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-20 text-black"
     >
       {/* Background */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[#F7EEDF]">
+      <div className="pointer-events-none absolute inset-0 -z-10 from-[#F7F9FC] to-white">
         <div className="absolute -top-40 left-1/3 h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-blue-400/15 blur-3xl" />
         <div className="absolute -bottom-40 right-0 h-[360px] w-[360px] rounded-full bg-blue-400/15 blur-3xl" />
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.18),transparent)]" />
