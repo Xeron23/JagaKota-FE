@@ -12,7 +12,7 @@ const Footer = () => {
       />
       <div className="container mx-auto max-w-7xl px-6 py-12">
         <div className="grid gap-10 md:grid-cols-3">
-          {/* Brand */}
+
           <div>
             <div className="text-xl font-semibold text-white">JagaKota</div>
             <p className="mt-3 text-sm text-gray-400">
@@ -21,7 +21,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Links */}
           <nav className="grid grid-cols-2 gap-6 text-sm md:grid-cols-3">
             <div>
               <div className="mb-3 font-medium text-white">Produk</div>
