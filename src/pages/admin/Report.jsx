@@ -5,7 +5,7 @@ import { useGetReports } from "@/hooks/useGetReports";
 import ButtonSubmit from "@/components/button";
 import { useNavigate } from "react-router-dom";
 import { UpdateReport } from "@/hooks/useReport";
-import FilterLaporan from "@/components/filter";
+import FilterLaporan from "@/components/Filter";
 
 export default function Reports(){
 
