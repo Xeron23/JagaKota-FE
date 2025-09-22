@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/Auth.jsx";
-import Spinner from "../components/Loader.jsx";
+import Spinner from "../components/loader.jsx";
 
 export default function PrivateRoute({ allowedRoles }) {
   const { isAuth, isChecking, user } = useAuth();
