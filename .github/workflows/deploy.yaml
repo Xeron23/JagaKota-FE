@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 28101
           script: |
-            cd /opt/JagaKota-FE
+            cd /opt/JagaKota-FE   
             git pull origin DEV
             echo "Writing .env file"
             cat <<EOF > .env

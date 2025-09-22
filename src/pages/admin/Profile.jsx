@@ -6,7 +6,7 @@ export function Profile({ onClose }) {
   const { isChecking, user, logout } = useAuth();
   if (isChecking) return <Spinner />;
 
-  return (
+  return (   
     <div className="absolute bottom-full right-0 mb-2 w-64 rounded-lg shadow-lg bg-white p-4 z-50">
 
       <div className="flex gap-3 items-center">
