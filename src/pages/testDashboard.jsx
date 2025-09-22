@@ -6,14 +6,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, A11y } from "swiper/modules"; // Tanpa Navigation
 import "swiper/css";
 import "swiper/css/pagination";
-import NavBar from "../components/Navbar.jsx";
+// import NavBar from "../components/Navbar.jsx";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-gray-800">
-      <NavBar />
+      {/* <NavBar /> */}
 
       {/* Main Content */}
       <main className="flex-grow overflow-y-auto">
