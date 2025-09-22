@@ -5,7 +5,7 @@ import PrivateRoute from "./utils/PrivateRoute.jsx";
 // import { useAuth } from "./context/Auth.jsx";
 import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
-import Spinner from "./components/Loader.jsx";
+import Spinner from "./components/loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
 import ReportDetail from "./pages/ReportDetail/index.jsx";
