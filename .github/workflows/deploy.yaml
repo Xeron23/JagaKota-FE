@@ -27,7 +27,7 @@ jobs:
             cat <<EOF > .env
             ${{ secrets.ENV_FILE_CONTENT }}
             EOF
-            docker build -t JagaKota-FE .
-            docker stop JagaKota-FE_container || true
-            docker rm JagaKota-FE_container || true
-            docker run -d --name JagaKota-FE_container -p 4000:80 JagaKota-FE
+            docker build -t jagakota-fe .
+            docker stop jagakota-fe_container || true
+            docker rm jagakota-fe_container || true
+            docker run -d --name jagakota-fe_container -p 4000:80 jagakota-fe
