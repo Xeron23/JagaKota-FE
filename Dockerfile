@@ -3,7 +3,6 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # install dependency native kalau ada package yang butuh
-RUN apk add --no-cache python3 make g++
 
 COPY package*.json ./
 RUN npm install
