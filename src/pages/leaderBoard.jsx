@@ -1,4 +1,4 @@
-import NavBar from "../components/Navbar";
+import NavBar from "../components/navBar";
 
 export default function LeaderBoard() {
   return (
