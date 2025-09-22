@@ -3,6 +3,7 @@ import ReportCard from "@/components/ReportCard";
 import { useGetReports } from "@/hooks/useGetReports";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -12,6 +13,7 @@ import "swiper/css/pagination";
 import { useEffect } from "react";
 
 export default function ReportCarrousel() {
+  const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useGetReports({
     offset: 0,
     limit: 6,
@@ -58,7 +60,7 @@ export default function ReportCarrousel() {
 
       {/* Content */}
       <div className="flex w-full flex-col text-left">
-        <div className="mb-8 flex items-center justify-between px-12">
+        <div className="mb-2 flex items-center justify-between px-12">
           <div>
             <h2 className="mb-4 text-3xl font-bold text-gray-900">
               Jelajahi Laporan Terbaru dari Warga
@@ -97,6 +99,19 @@ export default function ReportCarrousel() {
           </div>
         ) : (
           <div className="relative w-full px-14">
+            <div className="flex justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigate("/laporan");
+                  window.scrollTo(0, 0);
+                }}
+                className="group mb-2 flex items-center gap-2 rounded-lg"
+              >
+                <span className="font-medium">Lihat Semua Laporan</span>
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
             <Swiper {...swiperConfig}>
               {(isLoading ? Array.from({ length: 4 }) : reports).map((r, i) => (
                 <SwiperSlide key={isLoading ? `s-${i}` : r.report_id}>

@@ -2,7 +2,7 @@ import React from "react";
 import ReportCard from "@/components/ReportCard";
 import FilterSelect from "@/components/FilterSelect";
 import SearchBar from "@/components/SearchBar";
-
+import { useNavigate } from "react-router-dom";
 
 const VERIFICATION_STATUS_OPTIONS = [
   { label: "Pending", value: "PENDING" },
@@ -22,10 +22,15 @@ const ReportGrid = ({
   onSearchQueryChange,
   searchDelay = 400,
 }) => {
+  const navigate = useNavigate();
+
+  const handleReportClick = (reportId) => {
+    navigate(`/laporan/${reportId}`);
+  };
+
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between gap-4">
-
         {/* Filter */}
         <div className="w-56">
           <FilterSelect
@@ -69,7 +74,14 @@ const ReportGrid = ({
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {reports.map((r) => (
-            <ReportCard key={r.report_id} report={r} />
+            <ReportCard
+              key={r.report_id}
+              report={r}
+              onClick={() => {
+                handleReportClick(r.report_id);
+                window.scrollTo(0, 0);
+              }}
+            />
           ))}
         </div>
       )}

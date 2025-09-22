@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import Input from "../../components/Input.jsx";
-import ButtonSubmit from "../../components/Button.jsx";
-import Alert from "../../components/Alert.jsx";
+import Input from "@/components/Input.jsx";
+import ButtonSubmit from "@/components/Button.jsx";
+import Alert from "@/components/Alert.jsx";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect.jsx";
 
 import { useAuth } from "@/context/Auth.jsx";

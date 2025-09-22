@@ -3,11 +3,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
 // import { useAuth } from "./context/Auth.jsx";
-import Register from "./pages/auth/register.jsx";
-import Login from "./pages/auth/login.jsx";
+import Register from "./pages/Auth/Register";
+import Login from "./pages/Auth/Login";
 import Spinner from "./components/Loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
+import ReportDetail from "./pages/ReportDetail/index.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import ReportPage from "./pages/Report/index.jsx";
 import UploadReportPage from "./pages/UploadReport/index.jsx";
@@ -41,6 +42,16 @@ function App() {
         {
           index: true,
           element: <ReportPage />,
+        },
+      ],
+    },
+    {
+      path: "/laporan/:id",
+      element: <PublicLayout />,
+      children: [
+        {
+          index: true,
+          element: <ReportDetail />,
         },
       ],
     },
@@ -79,20 +90,20 @@ function App() {
               element: (
                 <Suspense fallback={<Spinner />}>
                   <AdminLayout>
-                    <DashboardAdmin/>
+                    <DashboardAdmin />
                   </AdminLayout>
                 </Suspense>
-              )
+              ),
             },
             {
               path: "/admin/reports",
               element: (
                 <Suspense fallback={<Spinner />}>
                   <AdminLayout>
-                    <Reports/>
+                    <Reports />
                   </AdminLayout>
                 </Suspense>
-              )
+              ),
             },
             {
               path: "/admin/reports/progress",

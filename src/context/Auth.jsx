@@ -3,7 +3,7 @@ import {
   useLogin,
   useLogout,
   useRegister,
-} from "../hooks/useAuth.jsx";
+} from "@/hooks/useAuth.js";
 
 const AuthContext = createContext();
 

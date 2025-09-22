@@ -39,7 +39,6 @@ const ReportForm = ({
     }
   }, [isSuccess]);
 
-  // Error handling dengan toast
   useEffect(() => {
     if (generalError) {
       toast.error("Gagal untuk mengunggah laporan, silakan coba lagi", {
