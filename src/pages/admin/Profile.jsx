@@ -8,13 +8,6 @@ export function Profile({ onClose }) {
 
   return (
     <div className="absolute bottom-full right-0 mb-2 w-64 rounded-lg shadow-lg bg-white p-4 z-50">
-      {/* Tombol Close */}
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500 hover:text-black"
-      >
-        ✕
-      </button>
 
       <div className="flex gap-3 items-center">
         <img
