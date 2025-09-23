@@ -50,10 +50,9 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
     });
   };
 
-  // Sort progress updates by createdAt in ascending order (oldest first)
   const sortedUpdates = progressUpdates
     ? [...progressUpdates].sort(
-        (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       )
     : [];
 
@@ -73,7 +72,7 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
         <div className="space-y-6">
           {sortedUpdates.map((update, index) => {
             const stageConfig = getStageConfig(update.stage);
-            const isLatest = index === sortedUpdates.length - 1;
+            const isLatest = index === 0;
 
             return (
               <div key={update.report_progress_id} className="relative">
@@ -84,7 +83,7 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
                       className={`rounded-lg border p-4 ${isLatest ? "border-gray-400 bg-gray-50" : "border-gray-200 bg-white"}`}
                     >
                       <div className="flex gap-4">
-                        {/* Photo on the left */}
+                        {/* foto */}
                         {update.photo_url && (
                           <div className="flex-shrink-0">
                             <img
@@ -95,9 +94,8 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
                           </div>
                         )}
 
-                        {/* Content on the right */}
+                        {/* deskripsi */}
                         <div className="min-w-0 flex-1">
-                          {/* Header */}
                           <div className="mb-3 flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                               <span
