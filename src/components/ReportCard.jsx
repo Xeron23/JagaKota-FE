@@ -1,11 +1,48 @@
 import { Button } from "./ui/button";
-import { MapPin, Calendar, User } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  User,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from "lucide-react";
 
-const STATUS_STYLES = {
-  PENDING: "bg-amber-100 text-amber-800 ring-amber-200",
-  APPROVED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
-  VERIFIED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
-  REJECTED: "bg-rose-100 text-rose-800 ring-rose-200",
+const getStatusConfig = (status) => {
+  const statusConfig = {
+    PENDING: {
+      icon: Clock,
+      color: "text-yellow-600",
+      bg: "bg-yellow-100",
+      label: "Menunggu Verifikasi",
+    },
+    VERIFIED: {
+      icon: CheckCircle,
+      color: "text-green-600",
+      bg: "bg-green-100",
+      label: "Terverifikasi",
+    },
+    APPROVED: {
+      icon: CheckCircle,
+      color: "text-green-600",
+      bg: "bg-green-100",
+      label: "Disetujui",
+    },
+    REJECTED: {
+      icon: XCircle,
+      color: "text-red-600",
+      bg: "bg-red-100",
+      label: "Ditolak",
+    },
+    IN_PROGRESS: {
+      icon: AlertCircle,
+      color: "text-blue-600",
+      bg: "bg-blue-100",
+      label: "Sedang Diproses",
+    },
+  };
+  return statusConfig[status] || statusConfig.PENDING;
 };
 
 function formatDate(iso) {
@@ -75,8 +112,9 @@ export default function ReportCard({
   }
 
   const status = String(report?.verification_status || "").toUpperCase();
-  const badge =
-    STATUS_STYLES[status] || "bg-gray-100 text-gray-700 ring-gray-200";
+  const statusConfig = getStatusConfig(status);
+  const StatusIcon = statusConfig.icon;
+
   const dateLabel = formatDate(report?.createdAt);
   const detailsHref =
     href ?? (report?.report_id ? `/laporan/${report.report_id}` : "#");
@@ -103,15 +141,16 @@ export default function ReportCard({
           </div>
         )}
 
-        {/* Gradient overlay biar teks/label lebih jelas */}
+        {/* Gradient overlay */}
         <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
 
         {status && (
-          <span
-            className={`absolute right-4 top-4 z-10 rounded-full px-3 py-1 text-xs font-semibold ring-1 backdrop-blur-sm ${badge}`}
+          <div
+            className={`absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold backdrop-blur-sm ${statusConfig.bg} ${statusConfig.color}`}
           >
-            {toTitleCase(status)}
-          </span>
+            <StatusIcon className="h-3 w-3" />
+            <span>{statusConfig.label}</span>
+          </div>
         )}
       </div>
 
