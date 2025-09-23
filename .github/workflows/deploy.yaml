@@ -29,7 +29,7 @@ jobs:
             ${{ secrets.ENV_FILE_CONTENT }}
             EOF
 
-            docker build \
+            docker build --no-cache \
               -t jagakota-fe . \
               --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
 
@@ -38,5 +38,6 @@ jobs:
 
             docker run -d \
               --name jagakota-fe_container \
+
               -p 4000:80 \
               jagakota-fe
