@@ -87,7 +87,7 @@ const Navbar = () => {
     return (
       <div className="flex items-center space-x-3">
         <Button asChild variant="outline" size="sm" className="px-4">
-          <Link to="/register">Sign Up</Link>
+        <Link to="/register">Sign Up</Link>
         </Button>
         <Button
           asChild
