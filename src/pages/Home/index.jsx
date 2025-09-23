@@ -7,8 +7,8 @@ import AboutUs from "./components/AboutUs";
 function HomePage() {
   return (
     <div>
-      <Statistic />
       <ReportCarrousel />
+      <Statistic />
       {/* <AboutUs /> */}
       <Jumbotron />
       {/* <Faq /> */}

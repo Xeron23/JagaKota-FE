@@ -17,6 +17,7 @@ export default function Jumbotron() {
       navigate(`/laporan`, {
         state: { provinceId: province, regencyId: regency },
       });
+      window.scrollTo(0, 0);
     }
   };
 

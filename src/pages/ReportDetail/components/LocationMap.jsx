@@ -1,77 +1,40 @@
-import React, { useEffect, useRef } from "react";
-import { MapPin, Navigation, ExternalLink } from "lucide-react";
+import React from "react";
+import { MapPin, Navigation } from "lucide-react";
+import MapComponent from "@/components/LocationPicker/components/MapComponent.jsx";
 
 const LocationMap = ({ latitude, longitude, address }) => {
-  const mapRef = useRef(null);
-  const mapInstance = useRef(null);
-  const markerInstance = useRef(null);
-
-  useEffect(() => {
-    // Map muncul jika latitude & longitude ada
-    if (!latitude || !longitude || !window.L) return;
-
-    if (!mapInstance.current && mapRef.current) {
-      mapInstance.current = window.L.map(mapRef.current, {
-        center: [latitude, longitude],
-        zoom: 16,
-        zoomControl: true,
-        zoomControlOptions: {
-          position: "topright",
-        },
-      });
-
-      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(mapInstance.current);
-
-      markerInstance.current = window.L.marker([latitude, longitude])
-        .addTo(mapInstance.current)
-        .bindPopup(
-          `
-          <div style="text-align: center; padding: 8px;">
-            <strong>${address.street}</strong><br>
-            <small>${address.regency.name}, ${address.province.name}</small>
-          </div>
-        `,
-        )
-        .openPopup();
-    }
-
-    if (mapInstance.current && markerInstance.current) {
-      mapInstance.current.setView([latitude, longitude], 16);
-      markerInstance.current.setLatLng([latitude, longitude]);
-    }
-
-    return () => {
-      if (mapInstance.current) {
-        mapInstance.current.remove();
-        mapInstance.current = null;
-        markerInstance.current = null;
-      }
-    };
-  }, [latitude, longitude, address]);
+  const hasCoords = Boolean(latitude && longitude);
+  const popup = (
+    <div style={{ textAlign: "center", padding: 8 }}>
+      <strong>{address?.street ?? "Lokasi"}</strong>
+      <br />
+      <small>
+        {address?.regency?.name ?? ""}
+        {address?.regency?.name && address?.province?.name ? ", " : ""}
+        {address?.province?.name ?? ""}
+      </small>
+    </div>
+  );
 
   const getDirections = () => {
+    if (!hasCoords) return;
+    const target = `${latitude},${longitude}`;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude: userLat, longitude: userLng } = position.coords;
-          const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${latitude},${longitude}`;
-          window.open(url, "_blank");
-        },
-        () => {
-          const url = `https://www.google.com/maps/dir//${latitude},${longitude}`;
-          window.open(url, "_blank");
-        },
+        ({ coords }) =>
+          window.open(
+            `https://www.google.com/maps/dir/${coords.latitude},${coords.longitude}/${target}`,
+            "_blank",
+          ),
+        () =>
+          window.open(`https://www.google.com/maps/dir//${target}`, "_blank"),
       );
     } else {
-      const url = `https://www.google.com/maps/dir//${latitude},${longitude}`;
-      window.open(url, "_blank");
+      window.open(`https://www.google.com/maps/dir//${target}`, "_blank");
     }
   };
 
-  if (!latitude || !longitude) {
+  if (!hasCoords) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
@@ -89,35 +52,31 @@ const LocationMap = ({ latitude, longitude, address }) => {
 
   return (
     <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      {/* Header */}
       <div className="relative border-b border-gray-200 bg-white p-6">
         <div className="flex items-center justify-between">
           <h3 className="flex items-center text-lg font-semibold text-gray-900">
             <MapPin className="mr-2 h-5 w-5 text-gray-600" />
             Lokasi di Peta
           </h3>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={getDirections}
-              className="flex items-center rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 transition-colors duration-200 hover:bg-blue-100"
-            >
-              <Navigation className="mr-1 h-4 w-4" />
-              Rute
-            </button>
-          </div>
+          <button
+            onClick={getDirections}
+            className="flex items-center rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium text-gray-900 transition-colors duration-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+          >
+            <Navigation className="mr-1 h-4 w-4" />
+            Rute
+          </button>
         </div>
       </div>
 
-      {/* Map Container */}
-      <div className="relative">
-        <div
-          ref={mapRef}
-          className="h-80 w-full bg-gray-100"
-          style={{
-            minHeight: "320px",
-          }}
-        />
-      </div>
+      <MapComponent
+        center={[latitude, longitude]}
+        position={{ lat: latitude, lng: longitude }}
+        onLocationSelect={() => {}}
+        height="h-80"
+        zoom={16}
+        markerPopupContent={popup}
+        autoOpenPopup
+      />
     </div>
   );
 };
