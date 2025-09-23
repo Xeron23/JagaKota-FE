@@ -37,7 +37,9 @@ export default function Jumbotron() {
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
               Cari Kerusakan Infrastruktur di Daerah Anda
             </h1>
-
+            <p className="mb-8 text-lg leading-relaxed text-gray-200">
+              Mari kita cari laporan di sekitar wilayah yang kau tuju
+            </p>
 
             {/* Card wrapper */}
             <div className="mb-6 rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">

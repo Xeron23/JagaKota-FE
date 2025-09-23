@@ -106,7 +106,7 @@ export default function ReportCarrousel() {
                   navigate("/laporan");
                   window.scrollTo(0, 0);
                 }}
-                className="group mb-2 flex items-center gap-2 rounded-lg"
+                className="group mb-2 flex items-center gap-2 rounded-lg hover:bg-[#6B8F71] hover:text-white"
               >
                 <span className="font-medium">Lihat Semua Laporan</span>
                 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

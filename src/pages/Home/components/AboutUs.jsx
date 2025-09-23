@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import about from "@/assets/images/about.png";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const AboutUs = () => {
   const navigate = useNavigate();
@@ -9,20 +10,20 @@ const AboutUs = () => {
     window.scrollTo(0, 0);
   };
   return (
-    <section className="isolate grid h-[80vh] w-full grid-cols-2 items-center justify-center bg-gradient-to-b px-20 text-black">
+    <section className="isolate grid h-[90vh] w-full grid-cols-2 items-center justify-center bg-gradient-to-b px-20 text-black">
       {/* Background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-indigo-400/20 blur-3xl" />
         <div className="absolute -bottom-40 right-0 h-[360px] w-[360px] rounded-full bg-amber-300/25 blur-3xl" />
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.9),transparent)]" />
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
+        {/* <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" /> */}
       </div>
 
-      <div className="container mx-auto">
-        <h2 className="mb-6 text-left text-4xl font-bold text-gray-900">
+      <div className="container mx-auto space-y-8">
+        <h2 className="text-left text-5xl font-bold leading-tight text-gray-900">
           Satu laporan untuk menjaga fasilitas kota
         </h2>
-        <p className="mb-8 text-lg leading-relaxed text-gray-800">
+        <p className="text-lg leading-relaxed text-gray-800">
           Bantu pemerintah memperbaiki jalan rusak, lampu jalan mati, drainase
           tersumbat, dan kerusakan lainnya. Laporkan lokasi dan detail agar tim
           kami bisa menindaklanjuti lebih cepat dengan{" "}
@@ -31,10 +32,11 @@ const AboutUs = () => {
         <Button
           variant="outline"
           size="lg"
-          className="rounded-full"
           onClick={handleNavigateToReport}
+          className="group flex items-center gap-2 rounded-full transition-all duration-300 hover:bg-[#6B8F71] hover:text-white"
         >
           Mulai lapor
+          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
         </Button>
       </div>
       <div className="flex items-center justify-center">

@@ -79,7 +79,7 @@ export default function ReportCard({
     STATUS_STYLES[status] || "bg-gray-100 text-gray-700 ring-gray-200";
   const dateLabel = formatDate(report?.createdAt);
   const detailsHref =
-    href ?? (report?.report_id ? `/reports/${report.report_id}` : "#");
+    href ?? (report?.report_id ? `/laporan/${report.report_id}` : "#");
   const addressLabel = formatAddress(report?.address);
   const usernameLabel = report?.author?.username
     ? `@${report.author.username}`
@@ -137,11 +137,11 @@ export default function ReportCard({
             </div>
           </div>
           <Button
-            href={detailsHref}
+            asChild
             onClick={onClick}
-            className="transition-color duration-600 w-full justify-center rounded-lg bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-[#6B8F71] hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
           >
-            Lihat Detail
+            <a href={detailsHref}>Lihat Detail</a>
           </Button>
         </div>
       </div>
