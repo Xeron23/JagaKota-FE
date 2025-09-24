@@ -2,6 +2,7 @@ import ButtonSubmit from "@/components/button";
 import { useGetReports } from "@/hooks/useGetReports";
 import { usePostReportprogress } from "@/hooks/usePostReportProgress";
 import { useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 
@@ -12,7 +13,7 @@ const INITIAL_FORM = {
 }
 
 export default function ReportsProgress(){
-
+  const steps = ["REVIEW", "INPROGRESS", "COMPLETED"];
   const [form, setForm] = useState(INITIAL_FORM); 
   const [selected, setSelected] = useState(null);
 
@@ -55,6 +56,10 @@ export default function ReportsProgress(){
         {
         onSuccess: () => {
             console.log("Progress report berhasil disubmit");
+            toast.success("Progress report berhasil disubmit");
+            // Refetch data report terbaru
+            reset(); // reset state mutation biar bisa submit lagi
+            // Clear form
             setForm(INITIAL_FORM);
         },
         onError: (err) => {
@@ -120,6 +125,50 @@ export default function ReportsProgress(){
             </div>
             <div className="flex flex-col gap-3">
             {/* Baris 1: Deskripsi & Stage */}
+            {/* Progress Stepper */}
+            <div className="flex justify-between items-center mb-6">
+            {steps.map((step, idx) => {
+              const progressStages = selected.progressUpdates?.map(p => p.stage) || [];
+
+              // Step aktif: yang terakhir dicapai
+              const isActive = progressStages[progressStages.length - 1] === step;
+
+              // Step sudah dilewati: kalau ada di progressStages tapi bukan yang aktif
+              const isCompleted = progressStages.includes(step) && !isActive;
+
+              return (
+                <div key={step} className="flex items-center w-full">
+                  {/* Lingkaran step */}
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border font-bold text-sm
+                      ${isActive ? "bg-teal-400 text-white border-teal-400" : ""}
+                      ${isCompleted ? "bg-green-400 text-white border-green-400" : ""}
+                      ${!isActive && !isCompleted ? "bg-gray-200 text-gray-600 border-gray-300" : ""}
+                    `}
+                  >
+                    {idx + 1}
+                  </div>
+
+                  {/* Nama step */}
+                  <span
+                    className={`ml-2 font-medium ${
+                      isActive ? "text-teal-600" : "text-gray-500"
+                    }`}
+                  >
+                    {step}
+                  </span>
+
+                  {/* Garis penghubung kecuali step terakhir */}
+                  {idx < steps.length - 1 && (
+                    <div
+                      className={`flex-1 h-1 mx-2 
+                        ${progressStages.includes(steps[idx + 1]) ? "bg-green-400" : "bg-gray-300"}`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+            </div>
                 <div className="flex w-full gap-3">
                     <div className="flex-1">
                         <label className="block text-sm font-medium">Deskripsi</label>
@@ -134,13 +183,19 @@ export default function ReportsProgress(){
                     <div className="w-1/3">
                         <label className="block text-sm font-medium">Stage</label>
                         <select
-                        className="mt-1 block w-full rounded-md border border-gray-300 p-2"
-                        value={form.stage}
-                        onChange={(e) => setForm((f) => ({ ...f, stage: e.target.value }))}>
-                        <option value="">Pilih stage</option>
-                        <option value="REVIEW">REVIEW</option>
-                        <option value="INPROGRESS">INPROGRESS</option>
-                        <option value="COMPLETED">COMPLETED</option>
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                          value={form.stage}
+                          onChange={(e) => setForm((f) => ({ ...f, stage: e.target.value }))}
+                        >
+                          <option value="">Pilih stage</option>
+                          {steps.map((step) => {
+                            const sudahAda = selected.progressUpdates?.some(p => p.stage === step);
+                            return (
+                              <option key={step} value={step} disabled={sudahAda}>
+                                {step}
+                              </option>
+                            );
+                          })}
                         </select>
                     </div>
                 </div>
@@ -208,9 +263,21 @@ export default function ReportsProgress(){
                   {item.address.province.name}
                 </p>
               </div>
-              {item.verification_status == "VERIFIED" && (
-                <div className="w-6 bg-[#ACF294] rounded-r-md" />
-              )}
+              {(() => {
+                const lastStage = item.progressUpdates?.[item.progressUpdates.length - 1]?.stage;
+
+                if (lastStage === "REVIEW") {
+                  return <div className="w-6 bg-[#FCF381] rounded-r-md" />;
+                }
+                if (lastStage === "INPROGRESS") {
+                  return <div className="w-6 bg-[#99ff77] rounded-r-md" />;
+                }
+                if (lastStage === "COMPLETED") {
+                  return <div className="w-6 bg-[#ACF294] rounded-r-md" />;
+                }
+
+                return <div className="w-6 bg-gray-200 rounded-r-md" />;
+              })()}
             </div>
           ))}
         </div>

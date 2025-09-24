@@ -1,5 +1,6 @@
 import ButtonSubmit from "@/components/button";
-import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
+// import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
+import ProvinceRegencySelect from "@/pages/admin/components/ProvinceRegSelect";
 import { useEffect, useMemo, useState } from "react";
 import imageadmin1 from "../../assets/images/imageadmin1.png"
 import reports from "@/constants/data/reports";
