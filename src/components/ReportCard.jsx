@@ -141,7 +141,6 @@ export default function ReportCard({
           </div>
         )}
 
-        {/* Gradient overlay */}
         <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
 
         {status && (
@@ -178,7 +177,8 @@ export default function ReportCard({
           <Button
             asChild
             onClick={onClick}
-            className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gray-900 to-gray-700 px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-[#6B8F71] hover:from-gray-800 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            className="group flex w-full items-center justify-center gap-2 rounded-full   px-4 py-2 text-sm font-medium shadow-md transition-all duration-300  focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            variant="primary"
           >
             <a href={detailsHref}>Lihat Detail</a>
           </Button>

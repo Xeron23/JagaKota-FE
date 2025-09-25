@@ -103,11 +103,6 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
                               >
                                 {stageConfig.label}
                               </span>
-                              {isLatest && (
-                                <span className="rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-800">
-                                  Terbaru
-                                </span>
-                              )}
                             </div>
                             <div className="flex items-center text-sm text-gray-500">
                               <Clock className="mr-1 h-4 w-4" />

@@ -9,7 +9,7 @@ export default function Jumbotron() {
   const [regency, setRegency] = useState("");
   const navigate = useNavigate();
 
-  const canReport = province && regency;
+  const canReport = province;
 
   const handleSearchReports = () => {
     console.log({ province, regency });
@@ -54,7 +54,7 @@ export default function Jumbotron() {
               />
 
               <Button
-                variant="secondary"
+                variant="primary"
                 size="lg"
                 disabled={!canReport}
                 className="mt-6 flex h-[50px] w-full transition-transform disabled:cursor-not-allowed disabled:opacity-60"
