@@ -8,6 +8,7 @@ import ProgressUpdates from "./components/ProgressUpdates";
 import LocationMap from "./components/LocationMap";
 import Loader from "@/components/loader";
 
+
 const ReportDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,12 +50,13 @@ const ReportDetail = () => {
       {/* Content */}
       <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Images */}
+          {/* Image */}
           <div className="lg:col-span-1">
             <div className="sticky top-20 z-20">
               <ReportImages photoUrl={report.photoUrl} title={report.title} />
             </div>
           </div>
+
 
           {/* Details */}
           <div className="relative z-10 space-y-6 lg:col-span-2">
