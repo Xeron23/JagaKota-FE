@@ -47,13 +47,13 @@ export default function ReportCarrousel() {
       className="relative isolate flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#F7F9FC] to-white px-6 py-20 text-black"
     >
       {/* Background */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[#F7EEDF]">
+      <div className="pointer-events-none absolute inset-0 -z-10 from-[#F7F9FC] to-white">
         <div className="absolute -top-40 left-1/3 h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-blue-400/15 blur-3xl" />
         <div className="absolute -bottom-40 right-0 h-[360px] w-[360px] rounded-full bg-blue-400/15 blur-3xl" />
         <div className="absolute inset-0 [background-image:radial-gradient(60%_40%_at_50%_0%,rgba(255,255,255,0.18),transparent)]" />
         <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
         <div
-          className="absolute inset-0 top-8 bg-[length:1000px_900px] bg-left-top bg-repeat opacity-45"
+          className="absolute inset-0 top-14 bg-[length:1000px_900px] bg-left-top bg-repeat opacity-45"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       </div>
@@ -106,7 +106,7 @@ export default function ReportCarrousel() {
                   navigate("/laporan");
                   window.scrollTo(0, 0);
                 }}
-                className="group mb-2 flex items-center gap-2 rounded-lg"
+                className="group mb-2 flex items-center gap-2 rounded-lg hover:bg-[#6B8F71] hover:text-white"
               >
                 <span className="font-medium">Lihat Semua Laporan</span>
                 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

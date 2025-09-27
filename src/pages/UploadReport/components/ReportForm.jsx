@@ -27,8 +27,7 @@ const ReportForm = ({
       : {};
   const generalError = error instanceof Error ? error.message : null;
 
-  useEffect(() => {
-  }, [isSuccess, isPending, error]);
+  useEffect(() => {}, [isSuccess, isPending, error]);
 
   // Success handling dengan toast
   useEffect(() => {
@@ -165,6 +164,7 @@ const ReportForm = ({
           type="submit"
           className="flex-1"
           disabled={isPending || !canSubmit}
+          variant="primary"
         >
           {isPending ? `Uploading... ${progress}%` : "Lapor"}
         </Button>

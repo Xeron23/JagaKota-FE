@@ -6,6 +6,8 @@ import ReportImages from "./components/ReportImages";
 import ReportInfo from "./components/ReportInfo";
 import ProgressUpdates from "./components/ProgressUpdates";
 import LocationMap from "./components/LocationMap";
+import Loader from "@/components/loader";
+
 
 const ReportDetail = () => {
   const { id } = useParams();
@@ -13,18 +15,11 @@ const ReportDetail = () => {
 
   const { data: report, isLoading: loading, error } = useGetReportById(id);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Memuat detail laporan...</p>
-        </div>
-      </div>
-    );
+  if (loading || !report) {
+    return <Loader onFinish={!loading} />;
   }
 
-  if (error || !report) {
+  if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -51,23 +46,24 @@ const ReportDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Content */}
       <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Images */}
+          {/* Image */}
           <div className="lg:col-span-1">
             <div className="sticky top-20 z-20">
               <ReportImages photoUrl={report.photoUrl} title={report.title} />
             </div>
           </div>
 
+
           {/* Details */}
           <div className="relative z-10 space-y-6 lg:col-span-2">
             {/* Informasi Laporan */}
             <ReportInfo report={report} />
 
-            {/* Location Map */}
+            {/* Maps */}
             <LocationMap
               latitude={report.address.latitude}
               longitude={report.address.longitude}

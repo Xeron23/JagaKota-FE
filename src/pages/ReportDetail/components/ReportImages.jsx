@@ -43,8 +43,7 @@ const ReportImages = ({ photoUrl, title }) => {
 
   return (
     <>
-      {/* Main Image Display */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-black shadow-xl">
         <div className="group relative">
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-20">
             <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -59,7 +58,6 @@ const ReportImages = ({ photoUrl, title }) => {
         </div>
       </div>
 
-      {/* Enhanced Modal */}
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4 backdrop-blur-sm"

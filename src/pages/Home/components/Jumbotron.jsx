@@ -9,7 +9,7 @@ export default function Jumbotron() {
   const [regency, setRegency] = useState("");
   const navigate = useNavigate();
 
-  const canReport = province && regency;
+  const canReport = province;
 
   const handleSearchReports = () => {
     console.log({ province, regency });
@@ -17,6 +17,7 @@ export default function Jumbotron() {
       navigate(`/laporan`, {
         state: { provinceId: province, regencyId: regency },
       });
+      window.scrollTo(0, 0);
     }
   };
 
@@ -34,13 +35,10 @@ export default function Jumbotron() {
         <div className="flex min-h-[80vh] items-center gap-12 py-12 text-center">
           <div className="mx-auto flex w-full max-w-6xl flex-col justify-center">
             <h1 className="mb-6 text-5xl font-bold leading-[60px] tracking-tight">
-              Laporkan Kerusakan Infrastruktur di Daerah Anda
+              Cari Kerusakan Infrastruktur di Daerah Anda
             </h1>
             <p className="mb-8 text-lg leading-relaxed text-gray-200">
-              Bantu pemerintah memperbaiki jalan rusak, lampu jalan mati,
-              drainase tersumbat, dan kerusakan lainnya. Laporkan lokasi dan
-              detail agar tim kami bisa menindaklanjuti lebih cepat dengan{" "}
-              <span className="font-bold text-[#eef6ff]">JagaKota</span>
+              Mari kita cari laporan di sekitar wilayah yang kau tuju
             </p>
 
             {/* Card wrapper */}
@@ -56,7 +54,7 @@ export default function Jumbotron() {
               />
 
               <Button
-                variant="secondary"
+                variant="primary"
                 size="lg"
                 disabled={!canReport}
                 className="mt-6 flex h-[50px] w-full transition-transform disabled:cursor-not-allowed disabled:opacity-60"

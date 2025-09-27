@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
   MapPin,
@@ -7,7 +7,10 @@ import {
   AlertCircle,
   XCircle,
   Clock,
+  Heart,
+  Loader2,
 } from "lucide-react";
+import { useLikes } from "../../../hooks/useLikes";
 
 const ReportInfo = ({ report }) => {
   const getStatusConfig = (status) => {
@@ -40,8 +43,8 @@ const ReportInfo = ({ report }) => {
     return statusConfig[status] || statusConfig.PENDING;
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("id-ID", {
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString("id-ID", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -49,10 +52,68 @@ const ReportInfo = ({ report }) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
 
+  const username = localStorage.getItem("username");
   const statusConfig = getStatusConfig(report.verification_status);
   const StatusIcon = statusConfig.icon;
+
+  const reportId = useMemo(() => report.report_id, [report]);
+
+  const initialLiked = report.isLiked;
+  const initialCount = report.likesCount;
+
+  const [liked, setLiked] = useState(Boolean(initialLiked));
+  const [likeCount, setLikeCount] = useState(Number(initialCount) || 0);
+
+  const {
+    likeData,
+    isLoadingLikes,
+    createLike,
+    deleteLike,
+    isLiking,
+    isUnliking,
+  } = useLikes(reportId, username);
+
+  useEffect(() => {
+    if (likeData && !isLoadingLikes) {
+      setLiked(likeData.isLikedByUser);
+      setLikeCount(likeData.likesCount);
+    }
+  }, [likeData, isLoadingLikes]);
+
+  const handleToggleLike = () => {
+    if (!reportId || isLiking || isUnliking) return;
+
+    if (liked) {
+      setLiked(false);
+      setLikeCount((c) => Math.max(0, c - 1));
+      deleteLike.mutate(undefined, {
+        onError: () => {
+          setLiked(true);
+          setLikeCount((c) => c + 1);
+        },
+      });
+    } else {
+      setLiked(true);
+      setLikeCount((c) => c + 1);
+      createLike.mutate(undefined, {
+        onError: () => {
+          setLiked(false);
+          setLikeCount((c) => Math.max(0, c - 1));
+        },
+      });
+    }
+  };
+
+  const likeBtnClasses = [
+    "flex items-center rounded-full px-3 py-2 border transition-colors select-none",
+    liked
+      ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100"
+      : "bg-gray-100 border-gray-200 text-gray-600 hover:bg-gray-200",
+    (isLiking || isUnliking) && "opacity-60 cursor-not-allowed",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -69,13 +130,41 @@ const ReportInfo = ({ report }) => {
           </div>
         </div>
 
-        <div
-          className={`flex items-center rounded-full px-3 py-2 ${statusConfig.bg}`}
-        >
-          <StatusIcon className={`mr-2 h-4 w-4 ${statusConfig.color}`} />
-          <span className={`text-sm font-medium ${statusConfig.color}`}>
-            {statusConfig.label}
-          </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-label={liked ? "Batalkan suka" : "Sukai laporan"}
+            aria-pressed={liked}
+            data-liked={liked ? "true" : "false"}
+            className={likeBtnClasses}
+            onClick={handleToggleLike}
+            disabled={isLiking || isUnliking || !reportId}
+            title={liked ? "Batalkan suka" : "Sukai laporan"}
+          >
+            {isLiking || isUnliking ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Heart
+                className={`mr-2 h-4 w-4 ${
+                  liked ? "text-rose-600" : "text-gray-500"
+                }`}
+                fill={liked ? "currentColor" : "none"}
+                strokeWidth={liked ? 2 : 1.8}
+              />
+            )}
+            <span className="text-sm font-medium">
+              {isLoadingLikes ? "..." : likeCount}
+            </span>
+          </button>
+
+          <div
+            className={`flex items-center rounded-full px-3 py-2 ${statusConfig.bg}`}
+          >
+            <StatusIcon className={`mr-2 h-4 w-4 ${statusConfig.color}`} />
+            <span className={`text-sm font-medium ${statusConfig.color}`}>
+              {statusConfig.label}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -90,11 +179,11 @@ const ReportInfo = ({ report }) => {
 
       {/* Location */}
       <div className="mb-6">
-        <h3 className=" flex items-center text-lg font-semibold text-gray-900">
+        <h3 className="flex items-center text-lg font-semibold text-gray-900">
           <MapPin className="mr-2 h-5 w-5 text-gray-600" />
           Lokasi
         </h3>
-        <div className="rounded-lg bg-gray-50 p-4 space-y-4">
+        <div className="space-y-4 rounded-lg bg-gray-50 p-4">
           <p className="mb-2 font-medium text-gray-900">
             Alamat : {report.address.street}
           </p>

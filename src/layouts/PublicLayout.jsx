@@ -23,7 +23,7 @@ export default function PublicLayout() {
         }`}
       >
         <Navbar />
-        <main className="container mx-auto flex-1 py-2">
+        <main className="container mx-auto flex-1 bg-[#F7EEDF]">
           <Outlet />
         </main>
         <Footer />

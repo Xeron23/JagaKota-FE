@@ -12,7 +12,7 @@ const ReportFilter = ({
 }) => {
   return (
     <div>
-      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 shadow-sm transition-shadow hover:shadow-md">
         <h1 className="text-2xl font-semibold text-slate-800">Cari Laporan</h1>
         <p className="mt-1 text-slate-600">
           Cari laporan berdasarkan provinsi dan kabupaten/kota
@@ -28,7 +28,11 @@ const ReportFilter = ({
           />
 
           <div className="flex items-end gap-2">
-            <Button onClick={onApply} className="w-full sm:w-auto">
+            <Button
+              onClick={onApply}
+              variant="primary"
+              className="w-full sm:w-auto"
+            >
               Terapkan
             </Button>
             <Button

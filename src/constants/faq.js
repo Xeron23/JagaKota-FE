@@ -5,7 +5,7 @@ export const faq = [
   },
   {
     q: "Bagaimana cara membuat laporan?",
-    a: "Mudah banget! ✨ Cukup masuk atau daftar akun JagaKota, lalu klik tombol Buat Laporan. Isi judul, deskripsi, lokasi, dan unggah foto pendukung (wajib). Setelah itu, klik Kirim dan tunggu proses verifikasi. Selesai! 🚀",
+    a: "Mudah banget! Cukup masuk atau daftar akun JagaKota, lalu klik tombol Buat Laporan. Isi judul, deskripsi, lokasi, dan unggah foto pendukung (wajib). Setelah itu, klik Kirim dan tunggu proses verifikasi. Selesai! ",
   },
   {
     q: "Apa arti status Pending, Verified, dan Rejected pada laporan saya?",
