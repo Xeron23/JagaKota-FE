@@ -22,6 +22,7 @@ const FilterLaporan = ({ onFilter, onClose }) => {
   };
 
   return (
+    <>
     <form onSubmit={handleSubmit} className="p-4 border rounded-md w-64 bg-white">
       <h3 className="mb-2 font-semibold">Urutkan menurut</h3>
       <div className="flex flex-col gap-1 mb-4">
@@ -41,16 +42,20 @@ const FilterLaporan = ({ onFilter, onClose }) => {
     <ProvinceRegencySelect
         provinceId={province}
         regencyId={regency}
+        f={true}
         onProvinceChange={setProvince}
         onRegencyChange={setRegency}
     />
-      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
+      <div className="p-2 flex gap-2 mt-2">
+      <button type="submit" className="bg-green-600 text-white w-full h-10 rounded">
         Cari
       </button>
-      <button type="button" className="bg-green-600 text-white px-4 py-2 rounded" onClick={onClose}>
+      <button type="button" className="bg-green-600 text-white w-full h-10 rounded" onClick={onClose}>
         Tutup
       </button>
+      </div>
     </form>
+    </>
   );
 };
 
