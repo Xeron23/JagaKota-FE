@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import Input from "../components/Input.jsx";
+import Input from "../components/input.jsx";
 import {
   getAllProvince,
   getRegencyById,
   uploadLaporan,
 } from "../resolver/auth/province";
 import reportSchema from "../schema/province.js";
-import NavBar from "../components/Navbar.jsx";
+import NavBar from "../components/navBar.jsx";
 
 const UploadForm = () => {
   const [formData, setFormData] = useState({

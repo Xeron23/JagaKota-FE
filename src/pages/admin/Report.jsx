@@ -5,7 +5,8 @@ import { useGetReports } from "@/hooks/useGetReports";
 import ButtonSubmit from "@/components/button";
 import { useNavigate } from "react-router-dom";
 import { UpdateReport } from "@/hooks/useReport";
-import FilterLaporan from "@/components/filter";
+import FilterLaporan from "@/components/Filter";
+import {toast} from "react-hot-toast"
 
 export default function Reports(){
 
@@ -14,15 +15,16 @@ export default function Reports(){
   const [selected, setSelected] = useState(null);
   const [filterSelect, setFilterSelected] = useState(false)
   const [dataFilter, setDataFilter] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const report = async(id, status, notes)=>{
 
     const rp = await UpdateReport(id, status, notes);
     console.log(rp);
     if(rp){
         inputPesan.current.value = "";
-        return alert("berhasi mengganti")
+        return toast.success("berhasil mengganti")
     } 
-    return alert("gagal bruhh")
+    return toast.error("gagal bruhh")
   }
 
   const [page, setPage] = useState(1); // page mulai dari 1
@@ -115,35 +117,56 @@ export default function Reports(){
                 <p className="font-light">{selected.address.street}, {selected.address.regency.name}, {selected.address.province.name}</p>
               </div>
 
-                {
-                  selected.verification_status == "PENDING" &&
-                  (
-                  <div className="w-full bg-[#F7EEDF] rounded-md p-3 flex flex-col gap-2">
+              {selected.verification_status == "PENDING" && (
+                <div className="w-full bg-[#F7EEDF] rounded-md p-3 flex flex-col gap-4">
                   <label className="font-semibold text-gray-700">Pesan kepada pengirim:</label>
-                  <input
-                    type="text"
+                  <div className="flex justify-between gap-2 w-full">
+                  <textarea
                     ref={inputPesan}
                     placeholder="Tulis pesan..."
-                    className="w-2/3 px-3 py-2 bg-[#F7EEDF] rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-gray-700 placeholder-gray-400"
+                    className="flex-1 px-3 py-2 bg-[#F7EEDF] rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-gray-700 placeholder-gray-400 resize-none"
+                    rows={3}
                   />
-                  <div className="mt-2 flex gap-2">
+                    <div className="flex flex-col gap-3 mt-2">
+                      <button
+                        className={`p-2 w-20 rounded-md border font-semibold transition 
+                          ${selectedStatus === "VERIFIED" ? "bg-[#ACF294]" : "bg-white border-gray-300"}
+                        `}
+                        onClick={() => setSelectedStatus("VERIFIED")}
+                      >
+                        Terima
+                      </button>
+
+                      <button
+                        className={`p-2 w-20 rounded-md border font-semibold transition 
+                          ${selectedStatus === "REJECTED" ? "bg-[#FFA3A3]" : "bg-white border-gray-300"}
+                        `}
+                        onClick={() => setSelectedStatus("REJECTED")}
+                      >
+                        Tolak
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Custom Radio Button */}
+
+                  {/* Tombol besar */}
                   <ButtonSubmit
-                  style="p-2 w-16 bg-[#ACF294] rounded-md"
-                  onClick={async () => {
-                    await report(selected.report_id, "VERIFIED", inputPesan.current.value);
-                  }}
-                >
-                  Terima
-                </ButtonSubmit>
-                <ButtonSubmit
-                  style="p-2 w-16 bg-[#FFA3A3] rounded-md"
-                  onClick={async ()=> await report(selected.report_id, "REJECTED", inputPesan.current.value)}
-                >
-                  Tolak
-                </ButtonSubmit> 
+                    style="mt-4 p-3 w-full bg-green-500 text-white rounded-md font-bold disabled:bg-gray-300"
+                    disabled={!selectedStatus} // disable kalau belum pilih
+                    onClick={async () => {
+                      if (!selectedStatus) return toast.error("Pilih status dulu!");
+
+                      if(!inputPesan.current.value) return toast.error("Tulis pesan dulu!");
+
+                      await report(selected.report_id, selectedStatus, inputPesan.current.value);
+                      setSelectedStatus(null); // reset biar balik ke awal
+                    }}
+                  >
+                    Konfirmasi
+                  </ButtonSubmit>
                 </div>
-                </div>)
-                }
+              )}
 
             </div>
           </div>

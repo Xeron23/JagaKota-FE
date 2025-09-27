@@ -4,25 +4,17 @@ import { Button } from "@/components/ui/button";
 import JagaKotaLogo from "@/assets/JagaKota.svg";
 import JagaKotaLogo2 from "@/assets/JagaKota2.svg";
 import { useAuth } from "@/context/Auth.jsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NavbarMenu = [
-  { name: "Beranda", href: "#beranda" },
+  { name: "Beranda", href: "" },
   { name: "Cari Laporan", href: "laporan" },
   { name: "Buat Laporan", href: "laporan/upload" },
 ];
 
 const Navbar = () => {
   const [elevated, setElevated] = useState(false);
-  const { isAuth, isChecking, user, logout } = useAuth();
+  const { isAuth, isChecking, user } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 8);
@@ -30,10 +22,6 @@ const Navbar = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   const renderAuthButtons = () => {
     if (isChecking) {
@@ -48,39 +36,19 @@ const Navbar = () => {
     if (isAuth) {
       const initial = (user?.username?.[0] || "U").toUpperCase();
       return (
-        <div className="flex items-center space-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="px-2">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.avatarUrl} alt={user?.username} />
-                    <AvatarFallback>{initial}</AvatarFallback>
-                  </Avatar>
-                  <span className="hidden text-sm font-medium text-gray-700 sm:inline">
-                    {user?.username}
-                  </span>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="mb-2 text-xs text-gray-500">
-                  Kamu Login Sebagai
-                </div>
-                <div className="truncate font-medium">@{user?.username}</div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-red-600 focus:text-red-600"
-              >
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <Link to="/profile">
+          <Button variant="ghost" size="sm" className="px-2">
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.avatarUrl} alt={user?.username} />
+                <AvatarFallback>{initial}</AvatarFallback>
+              </Avatar>
+              <span className="hidden text-sm font-medium text-gray-700 sm:inline">
+                {user?.username}
+              </span>
+            </div>
+          </Button>
+        </Link>
       );
     }
 
@@ -115,13 +83,13 @@ const Navbar = () => {
 
           <div className="flex items-center space-x-1">
             {NavbarMenu.map((item) => (
-              <a
+              <Link
                 key={item.href}
-                href={`/${item.href}`}
+                to={`/${item.href}`}
                 className="rounded-3xl px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-gray-200 hover:text-gray-900 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 

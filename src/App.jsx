@@ -5,7 +5,7 @@ import PrivateRoute from "./utils/PrivateRoute.jsx";
 // import { useAuth } from "./context/Auth.jsx";
 import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
-import Spinner from "./components/Loader.jsx";
+import Spinner from "./components/loader.jsx";
 import NotFound from "./pages/notFound.jsx";
 import HomePage from "@/pages/Home/index.jsx";
 import ReportDetail from "./pages/ReportDetail/index.jsx";
@@ -17,7 +17,9 @@ import Reports from "./pages/admin/Report.jsx";
 import DashboardAdmin from "./pages/admin/Dashboard.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import ReportsProgress from "./pages/admin/ReportProgress.jsx";
-import { Profile } from "./pages/admin/Profile.jsx";
+import Profile from "./pages/profile/profileDiri/index.jsx";
+import HistoryReport from "./pages/profile/riwayatLaporan/index.jsx";
+import LeaderBoard from "./pages/profile/papanPeringkat/index.jsx";
 
 const Dashboard = lazy(() => import("./pages/testDashboard.jsx"));
 
@@ -80,6 +82,22 @@ function App() {
           element: <PublicLayout />,
           children: [{ index: true, element: <UploadReportPage /> }],
         },
+        {
+          path: "/profile",
+          element: <PublicLayout />,
+          children: [{ index: true, element: <Profile /> }],
+        },
+        {
+          path: "/history",
+          element: <PublicLayout />,
+          children: [{ index: true, element: <HistoryReport /> }],
+        },
+        {
+          path: "/leaderboard",
+          element: <PublicLayout />,
+          children: [{ index: true, element: <LeaderBoard /> }],
+        }
+
       ],
     },
     {

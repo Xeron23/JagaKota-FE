@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import ProvinceRegencySelect from "@/components/ProvinceRegencySelect";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Alert from "@/components/Alert";
+import Alert from "@/components/alert";
 import toast from "react-hot-toast";
 
 const ReportForm = ({

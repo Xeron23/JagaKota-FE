@@ -11,6 +11,7 @@ const fetchReports = async ({
   like=false,
   weekly,
   latest,
+  userId,
   today
 } = {}) => {
   const params = { page, limit };
@@ -22,6 +23,7 @@ const fetchReports = async ({
   if(weekly) params.weekly = weekly;
   if(latest) params.latest = latest;
   if(today) params.today = today
+  if(userId) params.userId = userId
 
 
   console.log("Fetching reports with params:", params);

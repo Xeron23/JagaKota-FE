@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import { useAuth } from "../context/Auth";
 
-import Spinner from "../components/Loader.jsx";
+import Spinner from "../components/loader.jsx";
 
 export default function AdminAccess() {
   const { isAuth, isChecking, user } = useAuth();
