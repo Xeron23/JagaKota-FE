@@ -14,7 +14,7 @@ export default function PublicLayout() {
           duration={700}
           onFinish={() => setIsLoading(false)}
           fullscreen
-        />
+        />    
       )}
 
       <div
