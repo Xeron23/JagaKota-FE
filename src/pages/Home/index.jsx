@@ -11,7 +11,7 @@ function HomePage() {
       <ReportCarrousel />
       <Statistic />
       <Jumbotron />
-      {/* <Faq /> */}
+      <Faq />
     </div>
   );
 }

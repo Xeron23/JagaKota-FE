@@ -57,18 +57,10 @@ const ReportInfo = ({ report }) => {
   const statusConfig = getStatusConfig(report.verification_status);
   const StatusIcon = statusConfig.icon;
 
-  const reportId = useMemo(
-    () => report?.id ?? report?._id ?? report?.report_id ?? null,
-    [report],
-  );
+  const reportId = useMemo(() => report.report_id, [report]);
 
-  const initialLiked =
-    report?.is_liked ?? report?.isLiked ?? report?.liked ?? false;
-  const initialCount =
-    report?.likes_count ??
-    report?.likesCount ??
-    (Array.isArray(report?.likes) ? report.likes.length : undefined) ??
-    0;
+  const initialLiked = report.isLiked;
+  const initialCount = report.likesCount;
 
   const [liked, setLiked] = useState(Boolean(initialLiked));
   const [likeCount, setLikeCount] = useState(Number(initialCount) || 0);
@@ -82,7 +74,6 @@ const ReportInfo = ({ report }) => {
     isUnliking,
   } = useLikes(reportId, username);
 
-  // Sync with server response (authoritative)
   useEffect(() => {
     if (likeData && !isLoadingLikes) {
       setLiked(likeData.isLikedByUser);
@@ -94,23 +85,19 @@ const ReportInfo = ({ report }) => {
     if (!reportId || isLiking || isUnliking) return;
 
     if (liked) {
-      // Optimistic unlike
       setLiked(false);
       setLikeCount((c) => Math.max(0, c - 1));
       deleteLike.mutate(undefined, {
         onError: () => {
-          // rollback
           setLiked(true);
           setLikeCount((c) => c + 1);
         },
       });
     } else {
-      // Optimistic like
       setLiked(true);
       setLikeCount((c) => c + 1);
       createLike.mutate(undefined, {
         onError: () => {
-          // rollback
           setLiked(false);
           setLikeCount((c) => Math.max(0, c - 1));
         },
@@ -143,7 +130,6 @@ const ReportInfo = ({ report }) => {
           </div>
         </div>
 
-        {/* Like + Status */}
         <div className="flex items-center gap-2">
           <button
             type="button"
