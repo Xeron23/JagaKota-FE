@@ -8,9 +8,10 @@ const fetchReports = async ({
   regencyId,
   stage,
   verificationStatus: progress,
-  like,
+  like=false,
   weekly,
-  latest
+  latest,
+  today
 } = {}) => {
   const params = { page, limit };
   if (provinceId) params.provinceId = Number(provinceId);
@@ -20,6 +21,7 @@ const fetchReports = async ({
   if(like) params.like = like;
   if(weekly) params.weekly = weekly;
   if(latest) params.latest = latest;
+  if(today) params.today = today
 
 
   console.log("Fetching reports with params:", params);

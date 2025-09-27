@@ -15,7 +15,7 @@ const ReportPage = () => {
   const [appliedProvinceId, setAppliedProvinceId] = useState("");
   const [appliedRegencyId, setAppliedRegencyId] = useState("");
   const [appliedVerificationStatus, setAppliedVerificationStatus] =
-    useState("");
+  useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
 

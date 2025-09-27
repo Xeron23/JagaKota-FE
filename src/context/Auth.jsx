@@ -19,6 +19,7 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
+    
     if (token && userData) {
       setIsAuth(true);
       setUser(JSON.parse(userData));
@@ -32,8 +33,9 @@ export default function AuthProvider({ children }) {
   const login = async (identifier, password) => {
     try {
       const result = await loginMutation.mutateAsync({ identifier, password });
-      const { username, email, role, token } = result;
-      const userData = { username, email, role };
+      
+      const { username, email, role, token , id} = result;
+      const userData = { username, email, role, id};
 
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);

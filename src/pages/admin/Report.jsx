@@ -1,9 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-useReactTable,
-getCoreRowModel,
-flexRender,
-} from "@tanstack/react-table";
 
 import { useGetReports } from "@/hooks/useGetReports";
 // import reports from "@/constants/data/reports";
@@ -32,13 +27,8 @@ export default function Reports(){
 
   const [page, setPage] = useState(1); // page mulai dari 1
 
-  const [draftProvinceId, setDraftProvinceId] = useState("");
-  const [draftRegencyId, setDraftRegencyId] = useState("");
-
-  const [appliedProvinceId, setAppliedProvinceId] = useState("");
-  const [appliedRegencyId, setAppliedRegencyId] = useState("");
-  const [appliedVerificationStatus, setAppliedVerificationStatus] =
-    useState("");
+  // const [appliedVerificationStatus, setAppliedVerificationStatus] =
+  //   useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -50,7 +40,7 @@ export default function Reports(){
       limit: LIMIT,
       provinceId: dataFilter.province || undefined,
       regencyId: dataFilter.regency || undefined,
-      verificationStatus: appliedVerificationStatus || undefined,
+      // verificationStatus: appliedVerificationStatus || undefined,
       like: dataFilter.likes || undefined,
       weekly: dataFilter.weekly || undefined,
       latest: dataFilter.tanggal || undefined,
@@ -61,8 +51,9 @@ export default function Reports(){
       LIMIT,
       dataFilter.province,
       dataFilter.regency,
-      appliedVerificationStatus,
+      // appliedVerificationStatus,
       dataFilter.likes,
+      dataFilter.weekly,
       dataFilter.tanggal
     ],
   );
@@ -161,105 +152,80 @@ export default function Reports(){
         )}
       </div>
 
-      <div className="w-1/2  overflow-y-auto">
-        <div className="flex my-3  p-2 items-center gap-10">
-            <ButtonSubmit
-              style=" ml-2 w-20 p-2 bg-[#FCF381] rounded-md"
-              onClick={() => {
-                setAppliedVerificationStatus("PENDING");
-                setDataFilter("");
-                setFilterSelected(false);
-                
-              }}
-              >
-              Proses
-            </ButtonSubmit>
-            <ButtonSubmit
-              style="p-2 w-16 bg-[#ACF294] rounded-md"
-              onClick={() => {
-                setAppliedVerificationStatus("VERIFIED")
-                setDataFilter("");
-                setFilterSelected(false);
-              }}
-              >
-              Selesai
-            </ButtonSubmit>
-            <ButtonSubmit
-              style="p-2 w-16 bg-[#FFA3A3] rounded-md"
-              onClick={() => {
-                setAppliedVerificationStatus("REJECTED")
-                setDataFilter("");
-                setFilterSelected(false);
-                
-              }}
-            >
-              Tolak
-            </ButtonSubmit>
-
+      <div className="w-1/2 relative">
+      {/* konten utama list report */}
+      <div
+        className={`overflow-y-auto transition ${
+          filterSelect ? " pointer-events-none" : ""
+        }`}
+      >
+        <div className="flex my-3 p-2 justify-end w-3/4">
           <ButtonSubmit
-            style="flex bg-blue-200 gap-2 p-2 rounded-md self-center"
-            onClick={()=>{
-              setFilterSelected(true)
-              setAppliedVerificationStatus("")
-              }
-            }
+            style="flex bg-white gap-2 p-2 rounded-sm self-center w-[150px] mr-2"
+            onClick={() => {
+              setFilterSelected(true);
+            }}
           >
-            <img src="/images/filter.png" className="mt-1"/>
+            <img src="/images/filter.png" className="mt-1" />
             <p>Filter</p>
           </ButtonSubmit>
-          {/* <div className="flex bg-blue-200 gap-2 p-2 rounded-md self-center">
-            <img src="/images/filter.png" className="mt-1"/>
-            <p>Filter</p>
-          </div> */}
         </div>
-        {filterSelect && 
 
-        <div className="">
-          <FilterLaporan
-          onFilter={(data) => setDataFilter(data)}
-          onClose={()=>setFilterSelected(false)}/>
-        </div>
-        }
         <div className="p-6 max-h-[500px] overflow-y-auto scrollbar-none scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           {datas.map((item) => (
-          <div
-            key={item.report_id}
-            onClick={() => setSelected(item)}
-            className={`h-24 flex w-3/4 items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
-              ${selected?.report_id === item.report_id ? "bg-gray-200" : "bg-white"}`}
-          >
-            {/* Kiri: Foto */}
-            <div className="">
-              <img
-                src={item.photoUrl}
-                alt="thumbnail"
-                className="w-20 h-full rounded-md object-cover"
-              />
-            </div>
+            <div
+              key={item.report_id}
+              onClick={() => setSelected(item)}
+              className={`h-24 flex w-3/4 items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
+                ${selected?.report_id === item.report_id ? "bg-gray-200" : "bg-white"}`}
+            >
+              {/* Kiri: Foto */}
+              <div className="">
+                <img
+                  src={item.photoUrl}
+                  alt="thumbnail"
+                  className="w-20 h-full rounded-md object-cover"
+                />
+              </div>
 
-            {/* Tengah: Konten teks */}
-            <div className="flex flex-col flex-1 p-2 gap-4">
-              <p className="text-sm text-gray-800 line-clamp-2">{item.description}</p>
-              <p className="text-sm font-semibold text-gray-900">{item.address.street}, {item.address.regency.name}, {item.address.province.name}</p>
-            </div>
+              {/* Tengah */}
+              <div className="flex flex-col flex-1 p-2 gap-4">
+                <p className="text-sm text-gray-800 line-clamp-2">{item.description}</p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {item.address.street}, {item.address.regency.name},{" "}
+                  {item.address.province.name}
+                </p>
+              </div>
 
-            {/* Kanan: Kotak warna penuh */}
-            {
-              item.verification_status == "PENDING" && 
-              <div className="w-6 bg-[#FCF381] rounded-r-md" />
-            }
-            {
-              item.verification_status == "VERIFIED" && 
-              <div className="w-6 bg-[#ACF294] rounded-r-md" />
-            }
-            {
-              item.verification_status == "REJECTED"&& 
-              <div className="w-6 bg-[#FFA3A3] rounded-r-md" />
-            }
-          </div>
+              {/* Kanan: status */}
+              {item.verification_status == "PENDING" && (
+                <div className="w-6 bg-[#FCF381] rounded-r-md" />
+              )}
+              {item.verification_status == "VERIFIED" && (
+                <div className="w-6 bg-[#ACF294] rounded-r-md" />
+              )}
+              {item.verification_status == "REJECTED" && (
+                <div className="w-6 bg-[#FFA3A3] rounded-r-md" />
+              )}
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Overlay filter */}
+      {filterSelect && (
+        <div className="w-3/4 absolute inset-0 flex items-center justify-center ">
+            <FilterLaporan
+              onFilter={(data) => {
+                setDataFilter(data)
+                setFilterSelected(false)
+              }}
+              onClose={() => setFilterSelected(false)}
+            />
+        </div>
+      )}
+    </div>
+
     </div>
   );
 
