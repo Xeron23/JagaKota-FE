@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Calendar,
   MapPin,
@@ -8,9 +8,12 @@ import {
   XCircle,
   Clock,
   Heart,
+  MessageSquare,
   Loader2,
 } from "lucide-react";
 import { useLikes } from "../../../hooks/useLikes";
+import { useComments } from "../../../hooks/useComment";
+import toast from "react-hot-toast";
 
 const ReportInfo = ({ report }) => {
   const getStatusConfig = (status) => {
@@ -59,9 +62,9 @@ const ReportInfo = ({ report }) => {
 
   const reportId = useMemo(() => report.report_id, [report]);
 
+  // ====== LIKE STATE ======
   const initialLiked = report.isLiked;
   const initialCount = report.likesCount;
-
   const [liked, setLiked] = useState(Boolean(initialLiked));
   const [likeCount, setLikeCount] = useState(Number(initialCount) || 0);
 
@@ -115,6 +118,51 @@ const ReportInfo = ({ report }) => {
     .filter(Boolean)
     .join(" ");
 
+  // ====== COMMENT STATE ======
+  const { createComment, isCreating } = useComments(reportId);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const modalRef = useRef(null);
+
+  const handleOpenComment = () => setIsCommentOpen(true);
+  const handleCloseComment = () => {
+    setIsCommentOpen(false);
+    setCommentText("");
+  };
+
+  const handleSubmitComment = () => {
+    if (!commentText.trim()) return;
+    createComment.mutate(
+      { content: commentText },
+      {
+        onSuccess: () => {
+          setCommentText("");
+          toast.success("Komentar berhasil dibuat");
+          handleCloseComment();
+        },
+      }
+    );
+  };
+
+  // Close popup jika klik di luar modal
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        handleCloseComment();
+      }
+    };
+
+    if (isCommentOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCommentOpen]);
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-start justify-between">
@@ -131,6 +179,17 @@ const ReportInfo = ({ report }) => {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* comment */}
+          <button
+            type="button"
+            className="flex items-center rounded-full bg-gray-100 border border-gray-200 px-3 py-2 text-gray-600 hover:bg-gray-200 transition-colors"
+            onClick={handleOpenComment}
+          >
+            <MessageSquare className="mr-2 h-4 w-4" />
+            <span className="text-sm font-medium">Komentar</span>
+          </button>
+
+          {/* Like Button */}
           <button
             type="button"
             aria-label={liked ? "Batalkan suka" : "Sukai laporan"}
@@ -167,6 +226,40 @@ const ReportInfo = ({ report }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal Komentar */}
+      {isCommentOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div
+            ref={modalRef}
+            className="bg-white p-6 rounded-lg shadow-lg w-96"
+          >
+            <h3 className="text-lg font-semibold mb-4">Tulis Komentar</h3>
+            <textarea
+              className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="4"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Ketik komentar kamu..."
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={handleCloseComment}
+                className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-md"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSubmitComment}
+                disabled={isCreating}
+                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isCreating ? "Mengirim..." : "Kirim"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Description */}
       <div className="mb-6">
