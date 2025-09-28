@@ -34,7 +34,7 @@ const ReportDetail = () => {
                 ? "Anda tidak memiliki akses untuk melihat laporan ini"
                 : "Terjadi kesalahan saat memuat laporan"}
           </p>
-          <button
+          <button  
             onClick={() => navigate("/laporan")}
             className="font-medium text-blue-600 hover:text-blue-700"
           >

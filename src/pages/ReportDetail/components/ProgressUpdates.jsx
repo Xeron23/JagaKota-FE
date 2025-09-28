@@ -17,7 +17,7 @@ const ProgressUpdates = ({ progressUpdates, totalUpdates }) => {
         border: "border-orange-200",
         label: "Dalam Progress",
         description: "Perbaikan sedang berlangsung",
-      },
+      },  
       COMPLETED: {
         color: "text-green-600",
         bg: "bg-green-100",

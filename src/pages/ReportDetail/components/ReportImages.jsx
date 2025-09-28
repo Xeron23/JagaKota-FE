@@ -65,7 +65,7 @@ const ReportImages = ({ photoUrl, title }) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-        >
+        >  
           <div className="relative flex max-h-[40vh] max-w-[40vw] items-center justify-center">
             <button
               onClick={() => setShowModal(false)}

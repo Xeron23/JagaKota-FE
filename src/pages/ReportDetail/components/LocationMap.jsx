@@ -14,7 +14,7 @@ const LocationMap = ({ latitude, longitude, address }) => {
         {address?.province?.name ?? ""}
       </small>
     </div>
-  );
+  );  
 
   const getDirections = () => {
     if (!hasCoords) return;
