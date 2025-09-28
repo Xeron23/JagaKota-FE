@@ -32,7 +32,7 @@ const fetchLikes = async (reportId, username) => {
     res.data?.data ||
     { likesCount: 0, isLikedByUser: false };
 
-  console.log("Fetched likes:", payload);
+  console.log("Fetched likes test:", payload);
   return {
     likesCount: payload.likesCount ?? 0,
     isLikedByUser: payload.isLikedByUser ?? false

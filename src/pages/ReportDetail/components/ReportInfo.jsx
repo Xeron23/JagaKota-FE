@@ -187,6 +187,9 @@ const ReportInfo = ({ report }) => {
           >
             <MessageSquare className="mr-2 h-4 w-4" />
             <span className="text-sm font-medium">Komentar</span>
+            {/* <span className="text-sm font-medium">
+              {isLoading ? "..." : likeCount}
+            </span> */}
           </button>
 
           {/* Like Button */}
