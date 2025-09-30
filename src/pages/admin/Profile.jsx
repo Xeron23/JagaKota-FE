@@ -1,14 +1,30 @@
 import { useAuth } from "@/context/Auth";
-import UserProfile from "@/assets/icons/user.png"
+import UserProfile from "@/assets/icons/user.png";
 import ButtonSubmit from "@/components/button";
+import { useEffect, useState } from "react";
 
 export function Profile({ onClose }) {
   const { isChecking, user, logout } = useAuth();
-  if (isChecking) return <Spinner />;
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
 
-  return (   
-    <div className="absolute bottom-full right-0 mb-2 w-64 rounded-lg shadow-lg bg-white p-4 z-50">
+  // Deteksi ukuran layar
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth > 1920); // lebih dari Full HD 14 inch
+    };
+    handleResize(); // cek awal
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
+  if (isChecking) return null; // bisa diganti Spinner kalau ada
+
+  return (
+    <div
+      className={`absolute bottom-full right-0 mb-2 rounded-lg shadow-lg bg-white p-4 z-50 ${
+        isLargeScreen ? "w-64" : "w-52"
+      }`}
+    >
       <div className="flex gap-3 items-center">
         <img
           src={UserProfile}
@@ -30,7 +46,7 @@ export function Profile({ onClose }) {
             await logout();
             if (onClose) onClose();
           }}
-          style={"bg-[#FFA3A3] w-full py-2 rounded-md text-sm"}
+          style="bg-[#FFA3A3] w-full py-2 rounded-md text-sm"
         >
           Keluar Akun
         </ButtonSubmit>

@@ -81,7 +81,7 @@ export default function ReportsProgress(){
   }, [isLoading, isError, datas]);
 
     return (
-    <div className="p-6  flex w-full gap-10 px-20">
+    <div className="p-6  flex w-full gap-10 px-10">
       <div className="w-3/4 p-6 bg-white rounded-md">
         {selected ? (
           <div className="flex flex-col gap-4">
@@ -233,49 +233,37 @@ export default function ReportsProgress(){
         )}
       </div>
 
-      <div className="w-1/2 relative">
-      {/* konten utama list report */}
-      <div
-        className="overflow-y-auto transition"
-      >
+    <div className="relative w-full lg:w-1/2 xl:w-3/5 2xl:w-1/2">
+      <div className="overflow-y-auto transition">
         <div className="p-6 max-h-[500px] overflow-y-auto scrollbar-none scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           {datas.map((item) => (
             <div
               key={item.report_id}
               onClick={() => setSelected(item)}
-              className={`h-24 flex w-3/4 items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
+              className={`h-24 flex w-full items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
                 ${selected?.report_id === item.report_id ? "bg-gray-200" : "bg-white"}`}
             >
               {/* Kiri: Foto */}
-              <div className="">
-                <img
-                  src={item.photoUrl}
-                  alt="thumbnail"
-                  className="w-20 h-full rounded-md object-cover"
-                />
-              </div>
+              <img
+                src={item.photoUrl}
+                alt="thumbnail"
+                className="w-20 h-full rounded-md object-cover"
+              />
 
               {/* Tengah */}
               <div className="flex flex-col flex-1 p-2 gap-4">
                 <p className="text-sm text-gray-800 line-clamp-2">{item.description}</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {item.address.street}, {item.address.regency.name},{" "}
-                  {item.address.province.name}
+                  {item.address.street}, {item.address.regency.name}, {item.address.province.name}
                 </p>
               </div>
+
+              {/* Status */}
               {(() => {
                 const lastStage = item.progressUpdates?.[item.progressUpdates.length - 1]?.stage;
-
-                if (lastStage === "REVIEW") {
-                  return <div className="w-6 bg-[#FCF381] rounded-r-md" />;
-                }
-                if (lastStage === "INPROGRESS") {
-                  return <div className="w-6 bg-[#99ff77] rounded-r-md" />;
-                }
-                if (lastStage === "COMPLETED") {
-                  return <div className="w-6 bg-[#ACF294] rounded-r-md" />;
-                }
-
+                if (lastStage === "REVIEW") return <div className="w-6 bg-[#FCF381] rounded-r-md" />;
+                if (lastStage === "INPROGRESS") return <div className="w-6 bg-[#99ff77] rounded-r-md" />;
+                if (lastStage === "COMPLETED") return <div className="w-6 bg-[#ACF294] rounded-r-md" />;
                 return <div className="w-6 bg-gray-200 rounded-r-md" />;
               })()}
             </div>

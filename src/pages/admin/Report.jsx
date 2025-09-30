@@ -175,79 +175,68 @@ export default function Reports(){
         )}
       </div>
 
-      <div className="w-1/2 relative">
-      {/* konten utama list report */}
-      <div
-        className={`overflow-y-auto transition ${
-          filterSelect ? " pointer-events-none" : ""
-        }`}
+<div className="relative w-full lg:w-1/2 xl:w-1/2 2xl:w-[45%]">
+  {/* konten utama list report */}
+  <div className={`overflow-y-auto transition ${filterSelect ? "pointer-events-none" : ""}`}>
+    
+    {/* Button Filter */}
+    <div className="flex my-3 p-2 justify-end w-full lg:w-3/4">
+      <ButtonSubmit
+        style="flex bg-white gap-2 p-2 rounded-sm self-center w-[150px] mr-2"
+        onClick={() => setFilterSelected(true)}
       >
-        <div className="flex my-3 p-2 justify-end w-3/4">
-          <ButtonSubmit
-            style="flex bg-white gap-2 p-2 rounded-sm self-center w-[150px] mr-2"
-            onClick={() => {
-              setFilterSelected(true);
-            }}
-          >
-            <img src="/images/filter.png" className="mt-1" />
-            <p>Filter</p>
-          </ButtonSubmit>
-        </div>
-
-        <div className="p-6 max-h-[500px] overflow-y-auto scrollbar-none scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-          {datas.map((item) => (
-            <div
-              key={item.report_id}
-              onClick={() => setSelected(item)}
-              className={`h-24 flex w-3/4 items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
-                ${selected?.report_id === item.report_id ? "bg-gray-200" : "bg-white"}`}
-            >
-              {/* Kiri: Foto */}
-              <div className="">
-                <img
-                  src={item.photoUrl}
-                  alt="thumbnail"
-                  className="w-20 h-full rounded-md object-cover"
-                />
-              </div>
-
-              {/* Tengah */}
-              <div className="flex flex-col flex-1 p-2 gap-4">
-                <p className="text-sm text-gray-800 line-clamp-2">{item.description}</p>
-                <p className="text-sm font-semibold text-gray-900">
-                  {item.address.street}, {item.address.regency.name},{" "}
-                  {item.address.province.name}
-                </p>
-              </div>
-
-              {/* Kanan: status */}
-              {item.verification_status == "PENDING" && (
-                <div className="w-6 bg-[#FCF381] rounded-r-md" />
-              )}
-              {item.verification_status == "VERIFIED" && (
-                <div className="w-6 bg-[#ACF294] rounded-r-md" />
-              )}
-              {item.verification_status == "REJECTED" && (
-                <div className="w-6 bg-[#FFA3A3] rounded-r-md" />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Overlay filter */}
-      {filterSelect && (
-        <div className="w-3/4 absolute inset-0 flex items-center justify-center ">
-            <FilterLaporan
-              onFilter={(data) => {
-                setDataFilter(data)
-                setFilterSelected(false)
-              }}
-              onClose={() => setFilterSelected(false)}
-            />
-        </div>
-      )}
+        <img src="/images/filter.png" className="mt-1" />
+        <p>Filter</p>
+      </ButtonSubmit>
     </div>
+
+    {/* List Report */}
+    <div className="p-6 max-h-[500px] overflow-y-auto scrollbar-none scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+      {datas.map((item) => (
+        <div
+          key={item.report_id}
+          onClick={() => setSelected(item)}
+          className={`h-24 flex w-full items-stretch mb-2 cursor-pointer rounded-md border hover:bg-gray-100 transition
+            ${selected?.report_id === item.report_id ? "bg-gray-200" : "bg-white"}`}
+        >
+          {/* Kiri: Foto */}
+          <img
+            src={item.photoUrl}
+            alt="thumbnail"
+            className="w-20 h-full rounded-md object-cover"
+          />
+
+          {/* Tengah */}
+          <div className="flex flex-col flex-1 p-2 gap-4">
+            <p className="text-sm text-gray-800 line-clamp-2">{item.description}</p>
+            <p className="text-sm font-semibold text-gray-900">
+              {item.address.street}, {item.address.regency.name}, {item.address.province.name}
+            </p>
+          </div>
+
+          {/* Kanan: Status */}
+          {item.verification_status == "PENDING" && <div className="w-6 bg-[#FCF381] rounded-r-md" />}
+          {item.verification_status == "VERIFIED" && <div className="w-6 bg-[#ACF294] rounded-r-md" />}
+          {item.verification_status == "REJECTED" && <div className="w-6 bg-[#FFA3A3] rounded-r-md" />}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Overlay filter */}
+  {filterSelect && (
+    <div className="absolute inset-0 flex items-center justify-center w-full lg:w-3/4">
+      <FilterLaporan
+        onFilter={(data) => {
+          setDataFilter(data);
+          setFilterSelected(false);
+        }}
+        onClose={() => setFilterSelected(false)}
+      />
+    </div>
+  )}
+</div>
+
 
     </div>
   );
